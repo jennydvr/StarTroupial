@@ -13,20 +13,50 @@ using namespace std;
 
 // Variables
 bool paused = false;
-int fps = 60;
+float fps = 60;
+
+// Draws a text on screen
+void drawText(float pos[], char *text) {
+	glPushMatrix();
+    
+        // The font is too big, so it needs to be resized
+        glScalef(1/152.38, 1/152.38, 1/152.38);
+        glScalef(3.5, 3, 3);
+        glTranslatef(pos[0], pos[1], pos[2]);
+    
+        for (char* c = text; *c != '\0'; ++c)
+            glutStrokeCharacter(GLUT_STROKE_ROMAN, *c);
+    
+	glPopMatrix();
+}
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-
-    for (int i = 0; i != stars.size(); ++i)
-        stars[i].draw();
     
-    for (int i = 0; i != rings.size(); ++i)
-        rings[i].draw();
+    // Draw objects
+    drawObjects();
     
- //   player.draw();
+    // Draw score
+    char integerString[32];
+    char title[64] = "Score: ";
+    
+    sprintf(integerString, "%d", score);
+    strcat(title, integerString);
+    
+    float pos[] = {-2800, -2350, 100};
+    drawText(pos, title);
+    
+    // Draw fps
+    if (debug || fps != 60) {
+        sprintf(integerString, "%1.2f", fps);
+        sprintf(title, "FPS: ");
+        strcat(title, integerString);
+        
+        float pos[] = {-2800, 2290, 100};
+        drawText(pos, title);
+    }
     
     glPopMatrix();
     glFlush();
@@ -46,29 +76,12 @@ void reshape(GLint w, GLint h) {
     gluLookAt(0, 0, 50, 0, 0, 0, 0, 1, 0);
 }
 
-void update() {
-    // Update stars
-    if (rand() % 100 + 1 > 80)
-        stars.push_back(star());
-    
-    for (int i = 0; i != stars.size(); ++i)
-        stars[i].update();
-    
-    // Update rings
-    addRings(rand() % 8);
-    
-    for (int i = 0; i != rings.size(); ++i)
-        rings[i].update();
-    
-    // Remove dead stuff
-    remove_if(rings.begin(), rings.end(), ring::isDead);
-    remove_if(stars.begin(), stars.end(), star::isDead);
-}
-
 void timer(int v) {
     // Animate the world
-    if (!paused)
-        update();
+    if (!paused) {
+        updateObjects();
+        addObjects();
+    }
     
     // Draw the current frame
     glutPostRedisplay();
@@ -76,24 +89,41 @@ void timer(int v) {
 }
 
 void init() {
-    GLfloat black[] = {0, 0, 0, 1};
+    srand((unsigned int)time(NULL));
+    
+    GLfloat black[] = {0.1, 0.1, 0.1, 1};
     GLfloat white[] = {1, 1, 1, 1};
-    GLfloat direction[] = {1, 1, 1, 0};
+    GLfloat direction[] = {0, 25, 50, 0};
     
     glLightfv(GL_LIGHT0, GL_AMBIENT, black);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
     glLightfv(GL_LIGHT0, GL_SPECULAR, white);
     glLightfv(GL_LIGHT0, GL_POSITION, direction);
     
-    glEnable(GL_LIGHTING);                // so the renderer considers light
-    glEnable(GL_LIGHT0);                  // turn LIGHT0 on
-    glEnable(GL_DEPTH_TEST);              // so the renderer considers depth
+    glEnable(GL_LIGHTING);          // so the renderer considers light
+    glEnable(GL_LIGHT0);            // turn LIGHT0 on
+    glEnable(GL_DEPTH_TEST);        // so the renderer considers depth
+    glEnable(GL_COLOR_MATERIAL);    // enable color tracking
+    glEnable(GL_BLEND);
+    
+    glShadeModel(GL_SMOOTH);                            // Gourad shading
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);  // define what will be changed with glColor
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 'p': case 'P':
             paused = !paused;
+            break;
+        case '+':
+            fps *= (fps != 60) ? 2 : 1;
+            break;
+        case '-':
+            fps /= (fps > 0.05) ? 2 : 1;
+            break;
+        case 'o': case 'O':
+            debug = !debug;
             break;
     }
     
@@ -102,16 +132,19 @@ void keyboard(unsigned char key, int x, int y) {
     
     switch (key) {
         case 'w': case 'W':       // Up -> +y
-            player.move(0, 0.25);
+            player.update(0, 0.25);
             break;
         case 's': case 'S':      // Down -> -y
-            player.move(0, -0.25);
+            player.update(0, -0.25);
             break;
         case 'a': case 'A':      // Left -> +x
-            player.move(-0.25, 0);
+            player.update(-0.25, 0);
             break;
         case 'd': case 'D':      // Right -> -x
-            player.move(0.25, 0);
+            player.update(0.25, 0);
+            break;
+        case ' ':                // Add bullet
+            bullets.push_back(player.shoot());
             break;
     }
     
@@ -119,17 +152,18 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 int main(int argc, char** argv) {
-    srand(time(NULL));
-    
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(80, 80);
     glutInitWindowSize(1024, 768);
     glutCreateWindow("StarTroupial");
+    
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutTimerFunc(1000 / fps, timer, 0);
+    
     init();
+    
     glutMainLoop();
 }

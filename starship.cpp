@@ -8,27 +8,34 @@
 
 #include "starship.h"
 
-ship::ship() : x(0), y(0) { }
-
-void ship::move(float dx, float dy) {
-    x += dx;
-    y += dy;
+starship::starship() : object(0, 0, 40) {
+    box = boundingBox(x, y, z, 1);
+    current = previous = 0;
 }
 
-void ship::color(float r, float g, float b) {
-    GLfloat color[] = {r, g, b, 1.0};
-    GLfloat white[] = {1.0, 1.0, 1.0, 1.0};
+bullet starship::shoot() {
+    // Add bullet every second
+    current = glutGet(GLUT_ELAPSED_TIME);
     
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, white);
-    glMaterialf(GL_FRONT, GL_SHININESS, 30);
+    if (current - previous < 500)
+        return bullet(0, 0, true);
+    
+    previous = current;
+    return bullet(x, y);
 }
 
-void ship::draw() {
-    color(0, 0, 1);
+void starship::update(float dx, float dy, float dz) {
+    object::update(dx * 4, dy * 4);
+}
+
+void starship::draw() {
     glPushMatrix();
-    glTranslatef(x, y, 40);
-    glutSolidSphere(1, 16, 40);
+        glTranslatef(x, y, z);
+    
+        glColor3f(0, 0, 1);
+        glutSolidSphere(1, 16, 40);
+        glColor3f(1, 1, 1);
     glPopMatrix();
-    color(0, 0, 0);
+    
+    object::draw();
 }

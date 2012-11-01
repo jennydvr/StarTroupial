@@ -9,25 +9,35 @@
 #ifndef __StarTroupial__ring__
 #define __StarTroupial__ring__
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include "glm.h"
+#include "interactiveObject.h"
 
-class ring {
-    float x;
-    float y;
-    float z;
+class ring : public interactiveObject {
     
-    void color(float r, float g, float b);
+protected:
+    
+    // Sets the shininess for a material
+    void shininess(bool on);
+    
+    // Initializes a ring
+    void init();
+    
 public:
+    
+    // Random-position constructor
     ring();
+    
+    // Given-position constructor
     ring(float a, float b, float c = 0);
     
-    static bool isDead(ring r);
+    // Activated when hits something
+    void action();
     
+    // Updates the ring's position
+    void update(float dx = 0, float dy = 0, float dz = 0);
+    
+    // Draws the ring
     void draw();
-    void update();
+    
 };
 
 #endif /* defined(__StarTroupial__ring__) */

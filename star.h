@@ -9,26 +9,21 @@
 #ifndef __StarTroupial__star__
 #define __StarTroupial__star__
 
-#include <iostream>
+#include "object.h"
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include "glm.h"
-
-class star {
-    float x;
-    float y;
-    float z;
+class star : public object {
     
-    void color(float r, float g, float b);
 public:
+    
+    // Constructor
     star();
     
-    static bool isDead(star s);
+    // Updates star
+    void update(float dx = 0, float dy = 0, float dz = 0);
     
+    // Draws star
     void draw();
-    void update();
+    
 };
 
 #endif /* defined(__StarTroupial__star__) */

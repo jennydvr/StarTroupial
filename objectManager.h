@@ -9,19 +9,26 @@
 #ifndef __StarTroupial__objectManager__
 #define __StarTroupial__objectManager__
 
-#include <vector>
 #include <algorithm>
+#include <string.h>
 #include "starship.h"
 #include "ring.h"
 #include "star.h"
+#include "asteroid.h"
 
 using namespace std;
 
 // Game objects
 extern vector<ring> rings;
+extern vector<asteroid> asteroids;
 extern vector<star> stars;
-extern ship player;
+extern vector<bullet> bullets;
+extern starship player;
+extern int score;
 
-void addRings(int n);
+void drawText(float pos[], char *text);
+void updateObjects();
+void addObjects();
+void drawObjects();
 
 #endif /* defined(__StarTroupial__objectManager__) */

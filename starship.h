@@ -9,24 +9,30 @@
 #ifndef __StarTroupial__starship__
 #define __StarTroupial__starship__
 
-#include <iostream>
-#include <stdlib.h>
-#include "glm.h"
+#include "bullet.h"
 
-class ship {
-    float x;
-    float y;
+class starship : public object {
+    
+    // Mesh of the starship
     GLMmodel* mesh;
     
-    void color(float r, float g, float b);
+    // Time for shooting
+    int current, previous;
     
 public:
     
-    ship();
+    // Constructor
+    starship();
     
-    void move(float dx, float dy);
+    // Shoots
+    bullet shoot();
     
+    // Updates the ship's position
+    void update(float dx, float dy, float dz = 0);
+    
+    // Draws the ship
     void draw();
+    
 };
 
 #endif /* defined(__StarTroupial__starship__) */

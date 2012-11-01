@@ -8,41 +8,66 @@
 
 #include "ring.h"
 
-ring::ring() {
-    x = (float)rand() / ((float)RAND_MAX / 10) - 5;
-    y = (float)rand() / ((float)RAND_MAX / 10) - 5;
-    z = 0;
+ring::ring() : interactiveObject() {
+    init();
 }
 
-ring::ring(float a, float b, float c) {
-    x = a;
-    y = b;
-    z = c;
+ring::ring(float a, float b, float c) : interactiveObject(a, b, c) {
+    init();
 }
 
-void ring::color(float r, float g, float b) {
-    GLfloat color[] = {r, g, b, 1.0};
-    GLfloat white[] = {1.0, 1.0, 1.0, 1.0};
+void ring::init() {
+    // Set color to yellow
+    col[0] = 0.65; col[1] = 0.5; col[2] = 0;
     
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, white);
-    glMaterialf(GL_FRONT, GL_SHININESS, 30);
+    // Init the bounding box with this position
+    box = boundingBox(x, y, z, 0.1, 1);
+    
+    factor = 1;
+    touched = false;
 }
 
-bool ring::isDead(ring r) {
-    return r.z >= 50;
+void ring::action() {
+    col[1] = 0; // Color = red
+}
+
+void ring::shininess(bool on) {
+    // For more about this numbers, check documentation
+    GLfloat color[] = {col[0], col[1], col[2], 1};
+    GLfloat specular[] = {0.628281, 0.555802, 0.366065, 1};
+    GLfloat shininess = 51.2;
+    
+    // If the shininess is desired to be turned off, set everything to 0
+    if (!on) {
+        color[0] = color[1] = color[2] = 0;
+        specular[0] = specular[1] = specular[2] = 0;
+        shininess = 0;
+    }
+    
+    // Give a little light for the rings
+    GLfloat light[] = {color[0] * 0.025f, color[1]  * 0.025f, color[2]  * 0.025f, 1};
+    
+    // Set specular, shininess and the internal light
+    glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+    glMaterialfv(GL_FRONT, GL_EMISSION, light);
 }
 
 void ring::draw() {
-    color(0.65, 0.5, 0.0);
     glPushMatrix();
-    glScalef(1, 1.5, 1);
-    glTranslatef(x, y, z);
-    glutSolidTorus(0.1, 0.85, 16, 40);
+        glScalef(1, 1.5, 1);
+        glTranslatef(x, y, z);
+    
+        shininess(true);
+        glColor3f(col[0], col[1], col[2]);
+        glutSolidTorus(0.1, 1, 16, 32);
+        glColor3f(1, 1, 1);
+        shininess(false);
     glPopMatrix();
-    color(0, 0, 0);
+    
+    object::draw();
 }
 
-void ring::update() {
-    z += 0.25;
+void ring::update(float dx, float dy, float dz) {
+    object::update(0, 0, 0.25);
 }
