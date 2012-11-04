@@ -26,6 +26,9 @@ protected:
     int high;
     int low;
     
+    // Current color of the object
+    float col[3];
+    
     // Activates star luminosity
     void luminosity(float r = 0, float g = 0, float b = 0);
     
@@ -52,6 +55,5 @@ public:
     // Draws the object
     virtual void draw();
 };
-
 
 #endif /* defined(__StarTroupial__glObject__) */

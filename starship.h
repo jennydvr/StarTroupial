@@ -14,10 +14,13 @@
 class starship : public object {
     
     // Mesh of the starship
-    GLMmodel* mesh;
+    GLMmodel* model;
     
     // Time for shooting
     int current, previous;
+    
+    // Draw the model
+    void drawModel();
     
 public:
     

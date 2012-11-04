@@ -28,13 +28,41 @@ void starship::update(float dx, float dy, float dz) {
     object::update(dx * 4, dy * 4);
 }
 
+void starship::drawModel() {
+    if (!model) {
+        char filename[16] = "shipA_OBJ.obj";
+        model = glmReadOBJ(filename);
+        
+        if (!model)
+            exit(0);
+        
+        glmUnitize(model);
+        glmFacetNormals(model);
+        glmVertexNormals(model, 90);
+    }
+    
+    glmDraw(model, GLM_SMOOTH | GLM_MATERIAL);
+}
+
+void deactivateLight() {
+    
+}
+
+void deactivateMaterials() {
+    glDisable(GL_COLOR_MATERIAL);
+}
+
+void activateMaterials() {
+    glEnable(GL_COLOR_MATERIAL);
+}
+
 void starship::draw() {
     glPushMatrix();
         glTranslatef(x, y, z);
     
-        glColor3f(0, 0, 1);
-        glutSolidSphere(1, 16, 40);
-        glColor3f(1, 1, 1);
+        deactivateMaterials();
+        drawModel();
+        activateMaterials();
     glPopMatrix();
     
     object::draw();

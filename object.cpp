@@ -30,6 +30,8 @@ void object::luminosity(float r, float g, float b) {
 }
 
 void object::update(float dx, float dy, float dz) {
+    if (dead) return;
+    
     // Update position
     x += dx;
     y += dy;
@@ -40,6 +42,8 @@ void object::update(float dx, float dy, float dz) {
 }
 
 void object::draw() {
+    if (dead) return;
+    
     if (debug)
         box.draw();
 }

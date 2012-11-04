@@ -153,7 +153,7 @@ void keyboard(unsigned char key, int x, int y) {
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowPosition(80, 80);
     glutInitWindowSize(1024, 768);
     glutCreateWindow("StarTroupial");

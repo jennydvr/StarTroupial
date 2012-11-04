@@ -12,6 +12,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "interactiveObject.h"
+#include "particle.h"
+
+static float DEXP[42][3] = {
+    {0, 0, 1}, {0, 0, -1}, {0, 1, 0}, {0, -1, 0}, {1, 0, 0}, {-1, 0, 0},
+    {0, 1, 1}, {0, 1, -1}, {0, -1, 1}, {0, -1, -1},
+    {1, 0, 1}, {1, 0, -1}, {-1, 0, 1}, {-1, 0, -1},
+    {1, 1, 0}, {1, -1, 0}, {-1, 1, 0}, {-1, -1, 0},
+    {1, 1, 1}, {1, 1, -1}, {1, -1, 1}, {-1, 1, 1},
+    {1, -1, -1}, {-1, 1, -1}, {-1, -1, 1}, {-1, -1, -1},
+    {0, 0.75, 0.25}, {0, 0.75, -0.25}, {0, -0.75, 0.25}, {0, -0.75, -0.25},
+    {0, 0.25, 0.75}, {0, 0.25, -0.75}, {0, -0.25, 0.75}, {0, -0.25, -0.75},
+    {0.75, 0, 0.25}, {0.75, 0, -0.25}, {-0.75, 0, 0.25}, {-0.75, 0, -0.25},
+    {0.25, 0, 0.75}, {0.25, 0, -0.75}, {-0.25, 0, 0.75}, {-0.25, 0, -0.75}
+};
 
 class asteroid : public interactiveObject {
     
@@ -22,9 +36,6 @@ protected:
     
     // Sides of the asteroid
     int sides;
-    
-    // Mesh for the asteroid
-    GLMmodel* mesh;
     
     // Initializes an asteroid
     void init();
@@ -37,11 +48,17 @@ protected:
     
 public:
     
+    // Particles created
+    bool everExploded;
+    
     // Random-position constructor
     asteroid();
     
     // Given-position constructor
     asteroid(float a, float b, float c = 0);
+    
+    // Creates particles
+    std::vector<particle> explode();
     
     // Activated when hits something
     void action();

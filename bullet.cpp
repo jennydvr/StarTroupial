@@ -19,7 +19,7 @@ bullet::bullet(float a, float b, bool kill) : interactiveObject(a, b, 40) {
 }
 
 void bullet::init() {
-    box = boundingBox(x, y, z, 1, 0.25f);
+    box = boundingBox(x, y, z, 0.25f);
 }
 
 void bullet::action() {
@@ -36,7 +36,7 @@ void bullet::draw() {
     glTranslatef(x, y, z);
     glScalef(1, 1, 1);
     
-        glColor3f(0, 1, 1);
+        glColor3f(0.5f, 0.5f, 0.5f);
         luminosity(0.5f, 1, 1);
         glutSolidSphere(0.25f, 16, 16);
         luminosity();

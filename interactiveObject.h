@@ -21,9 +21,6 @@ protected:
     // Auments or decrements the player's score
     int factor;
     
-    // Current color of the object
-    float col[3];
-    
     // Initializes parameters
     virtual void init();
     

@@ -15,6 +15,7 @@
 #include "ring.h"
 #include "star.h"
 #include "asteroid.h"
+#include "particle.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ extern vector<ring> rings;
 extern vector<asteroid> asteroids;
 extern vector<star> stars;
 extern vector<bullet> bullets;
+extern vector<particle> particles;
 extern starship player;
 extern int score;
 
