@@ -36,6 +36,9 @@ public:
     // Draws the ship
     void draw();
     
+    // Resets the ship
+    void reset();
+    
 };
 
 #endif /* defined(__StarTroupial__starship__) */

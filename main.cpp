@@ -14,6 +14,7 @@ using namespace std;
 // Variables
 bool paused = false;
 float fps = 60;
+bool gameOver = false;
 
 // Draws a text on screen
 void drawText(float pos[], char *text) {
@@ -45,8 +46,16 @@ void display() {
     sprintf(integerString, "%d", score);
     strcat(title, integerString);
     
-    float pos[] = {-2800, -2350, 100};
-    drawText(pos, title);
+    float pos0[] = {-2800, -2350, 100};
+    drawText(pos0, title);
+    
+    // Draw time
+    sprintf(integerString, "%d", gametime);
+    sprintf(title, "Time: ");
+    strcat(title, integerString);
+    
+    float pos1[] = {2200, 2250, 100};
+    drawText(pos1, title);
     
     // Draw fps
     if (debug || fps != 60) {
@@ -54,8 +63,20 @@ void display() {
         sprintf(title, "FPS: ");
         strcat(title, integerString);
         
-        float pos[] = {-2800, 2290, 100};
-        drawText(pos, title);
+        float pos2[] = {-2800, 2250, 100};
+        drawText(pos2, title);
+    }
+    
+    // Game over
+    if (gameOver) {
+        sprintf(title, "GAME OVER");
+        float pos3[] = {-2800, 2250, 100};
+        drawText(pos3, title);
+        
+        
+        sprintf(title, "Play again = r  Quit = q");
+        float pos4[] = {-2800, 2050, 100};
+        drawText(pos4, title);
     }
     
     glPopMatrix();
@@ -77,10 +98,22 @@ void reshape(GLint w, GLint h) {
 }
 
 void timer(int v) {
+    // Check game over
+    gameOver = checkGametime();
+    
+    if (gameOver) {
+        paused = debug = false;
+        fps = 60;
+        glutPostRedisplay();
+        glutTimerFunc(1000 / fps, timer, 0);
+        return;
+    }
+    
     // Animate the world
     if (!paused) {
         updateObjects();
         addObjects();
+        checkGametime();
     }
     
     // Draw the current frame
@@ -112,6 +145,19 @@ void init() {
 }
 
 void keyboard(unsigned char key, int x, int y) {
+    if (gameOver) {
+        switch (key) {
+            case 'r': case 'R': // Reset game
+                resetGame();
+                break;
+            case 'q':           // Quit game
+                exit(0);
+                break;
+        }
+        
+        return;
+    }
+    
     switch (key) {
         case 'p': case 'P':
             paused = !paused;

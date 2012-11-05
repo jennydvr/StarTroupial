@@ -13,8 +13,10 @@ vector<asteroid> asteroids;
 vector<star> stars;
 vector<particle> particles;
 vector<bullet> bullets;
+vector<light> lights;
 starship player;
 
+int gametime = 60;
 int score = 0;
 
 int currentTime = 0;
@@ -25,6 +27,8 @@ int ringsRate = 3000;
 
 int asteroidsPrevTime = 0;
 int asteroidsRate = 3000;
+
+int initialGametime = 0;
 
 bool notVisible(object object) {
     return !object.visible();
@@ -57,11 +61,15 @@ void updateHits(bullet &obj) {
     obj.update();
 }
 
-void updateParticles(asteroid &obj) {
+void updateParticles(asteroid &obj) {   // ADDS EXPLOSION LIGHT TOO
     if (!obj.dead)
         return;
     
     vector<particle> ans = obj.explode();
+    
+    // Only create light if there are particles - explosion
+    if (!ans.empty())
+        lights.push_back(obj.createLight());
     
     while (!ans.empty()) {
         particles.push_back(ans.back());
@@ -77,6 +85,12 @@ void removeObjects(vector<T> &v) {
     // Delete them
     while (v.size() != 0 && !v.back().visible())
         v.pop_back();
+}
+
+bool checkGametime() {
+    int t = (glutGet(GLUT_ELAPSED_TIME) - initialGametime) / 1000;
+    gametime = gametime <= 0 ? 0 : 60 - t;
+    return gametime == 0;
 }
 
 void addRings() {
@@ -168,6 +182,7 @@ void updateObjects() {
     for_each(asteroids.begin(), asteroids.end(), updatePoints<asteroid>);
     for_each(stars.begin(), stars.end(), update<star>);
     for_each(particles.begin(), particles.end(), update<particle>);
+    for_each(lights.begin(), lights.end(), update<light>);
     
     // Add particles
     for_each(asteroids.begin(), asteroids.end(), updateParticles);
@@ -178,6 +193,7 @@ void updateObjects() {
     removeObjects(stars);
     removeObjects(particles);
     removeObjects(bullets);
+    removeObjects(lights);
 }
 
 void addObjects() {
@@ -210,4 +226,29 @@ void drawObjects() {
     
     // Draw asteroids
     for_each(asteroids.begin(), asteroids.end(), draw<asteroid>);
+}
+
+void resetGame() {
+    particles.clear();
+    stars.clear();
+    bullets.clear();
+    rings.clear();
+    asteroids.clear();
+    
+    // DISABLE ALL LIGHTS!!
+    for_each(lights.begin(), lights.end(), light::disable);
+    lights.clear();
+    
+    score = 0;
+    player.reset();
+    
+    currentTime = 0;
+    
+    ringsPrevTime = glutGet(GLUT_ELAPSED_TIME);
+    ringsRate = 3000;
+    
+    asteroidsPrevTime = glutGet(GLUT_ELAPSED_TIME);
+    asteroidsRate = 3000;
+    initialGametime = glutGet(GLUT_ELAPSED_TIME);
+    gametime = 60;
 }

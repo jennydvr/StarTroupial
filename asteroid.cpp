@@ -59,6 +59,10 @@ std::vector<particle> asteroid::explode() {
     return ans;
 }
 
+light asteroid::createLight() {
+    return light(x, y, z);
+}
+
 void asteroid::action() {
     dead = true;
 }

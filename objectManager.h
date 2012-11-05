@@ -16,6 +16,7 @@
 #include "star.h"
 #include "asteroid.h"
 #include "particle.h"
+#include "explosionLight.h"
 
 using namespace std;
 
@@ -25,12 +26,16 @@ extern vector<asteroid> asteroids;
 extern vector<star> stars;
 extern vector<bullet> bullets;
 extern vector<particle> particles;
+extern vector<light> lights;
 extern starship player;
 extern int score;
+extern int gametime;
 
 void drawText(float pos[], char *text);
 void updateObjects();
 void addObjects();
 void drawObjects();
+void resetGame();
+bool checkGametime();
 
 #endif /* defined(__StarTroupial__objectManager__) */

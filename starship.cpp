@@ -55,3 +55,9 @@ void starship::draw() {
     
     object::draw();
 }
+
+void starship::reset() {
+    x = y = 0;
+    box = boundingBox(x, y, z, 1, true);
+    current = previous = 0;
+}

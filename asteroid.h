@@ -13,7 +13,9 @@
 #include <stdlib.h>
 #include "interactiveObject.h"
 #include "particle.h"
+#include "explosionLight.h"
 
+// Explosion - Directional vectors
 static float DEXP[42][3] = {
     {0, 0, 1}, {0, 0, -1}, {0, 1, 0}, {0, -1, 0}, {1, 0, 0}, {-1, 0, 0},
     {0, 1, 1}, {0, 1, -1}, {0, -1, 1}, {0, -1, -1},
@@ -56,6 +58,9 @@ public:
     
     // Creates particles
     std::vector<particle> explode();
+    
+    // Initialize explosion light
+    light createLight();
     
     // Activated when hits something
     void action();

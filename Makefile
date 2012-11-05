@@ -9,21 +9,20 @@
 # where
 #       xxxx.c is the name of the file you wish to compile 
 #       
-# A binary named xxxx will be produced
+# A binary named xxxx will be produced/Users/jedaniv/Proyectos/StarTroupial/StarTroupial
 # Libraries are assumed to be in the default search paths
 # as are any required include files
 
 #LDLIBS = -lglut -lGL -lGLU -lX11  -lm -L/usr/X11R6/lib
 LDLIBS = -framework OpenGL -framework GLUT
 
-StarTroupial: main.o objectManager.o star.o asteroid.o ring.o starship.o bullet.o particle.o interactiveObject.o object.o collisionManager.o glm.o
-	g++ -o StarTroupial main.o objectManager.o star.o asteroid.o ring.o starship.o bullet.o particle.o interactiveObject.o object.o collisionManager.o glm.o $(LDLIBS) -w
-	rm *.o
+StarTroupial: main.o objectManager.o star.o asteroid.o ring.o starship.o bullet.o explosionLight.o particle.o interactiveObject.o object.o collisionManager.o glm.o
+	g++ -o StarTroupial main.o objectManager.o star.o asteroid.o ring.o starship.o bullet.o explosionLight.o particle.o interactiveObject.o object.o collisionManager.o glm.o $(LDLIBS) -w
 
 objectManager.o: objectManager.cpp objectManager.h star.h asteroid.h ring.h starship.h
-	g++-mp-4.6 -c objectManager.cpp -w
+	g++ -c objectManager.cpp -w
 
-asteroid.o: asteroid.cpp asteroid.h particle.h interactiveObject.h
+asteroid.o: asteroid.cpp asteroid.h particle.h particle.h explosionLight.h interactiveObject.h
 	g++ -c asteroid.cpp -w
 
 ring.o: ring.cpp ring.h interactiveObject.h
@@ -34,6 +33,9 @@ starship.o: starship.cpp starship.h bullet.h
 
 bullet.o: bullet.cpp bullet.h interactiveObject.h
 	g++ -c bullet.cpp -w
+
+explosionLight.o: explosionLight.cpp explosionLight.h object.h
+	g++ -c explosionLight.cpp -w
 
 particle.o: particle.cpp particle.h object.h
 	g++ -c particle.cpp -w
