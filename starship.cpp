@@ -9,7 +9,7 @@
 #include "starship.h"
 
 starship::starship() : object(0, 0, 40) {
-    box = boundingBox(x, y, z, 1);
+    box = boundingBox(x, y, z, 1, true);
     current = previous = 0;
 }
 
@@ -30,7 +30,7 @@ void starship::update(float dx, float dy, float dz) {
 
 void starship::drawModel() {
     if (!model) {
-        char filename[16] = "shipA_OBJ.obj";
+        char filename[16] = "ship.obj";
         model = glmReadOBJ(filename);
         
         if (!model)
@@ -44,25 +44,13 @@ void starship::drawModel() {
     glmDraw(model, GLM_SMOOTH | GLM_MATERIAL);
 }
 
-void deactivateLight() {
-    
-}
-
-void deactivateMaterials() {
-    glDisable(GL_COLOR_MATERIAL);
-}
-
-void activateMaterials() {
-    glEnable(GL_COLOR_MATERIAL);
-}
-
 void starship::draw() {
     glPushMatrix();
         glTranslatef(x, y, z);
     
-        deactivateMaterials();
+        glDisable(GL_COLOR_MATERIAL);
         drawModel();
-        activateMaterials();
+        glEnable(GL_COLOR_MATERIAL);
     glPopMatrix();
     
     object::draw();

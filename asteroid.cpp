@@ -124,5 +124,5 @@ void asteroid::update(float dx, float dy, float dz) {
     
     angle += 1;
     angle = (angle == 360) ? 0 : angle;
-    interactiveObject::update(0, 0, 0.25);
+    interactiveObject::update(0, 0, SPEED);
 }

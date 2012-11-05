@@ -21,14 +21,18 @@ void ring::init() {
     col[0] = 0.65; col[1] = 0.5; col[2] = 0;
     
     // Init the bounding box with this position
-    box = boundingBox(x, y, z, 0.1, 1);
+    box = boundingBox(x, y, z, 0.1f, 1.0f);
     
     factor = 1;
+    emission = 0.025f;
     touched = false;
+    rotate = false;
 }
 
 void ring::action() {
-    col[1] = 0; // Color = red
+    col[0] = 0.85; col[1] = 0.7;
+    emission = 0.25f;
+    rotate = true;
 }
 
 void ring::shininess(bool on) {
@@ -45,7 +49,7 @@ void ring::shininess(bool on) {
     }
     
     // Give a little light for the rings
-    GLfloat light[] = {color[0] * 0.025f, color[1]  * 0.025f, color[2]  * 0.025f, 1};
+    GLfloat light[] = {color[0] * emission, color[1]  * emission, color[2]  * emission, 1};
     
     // Set specular, shininess and the internal light
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
@@ -58,6 +62,9 @@ void ring::draw() {
         glScalef(1, 1.5, 1);
         glTranslatef(x, y, z);
     
+        if (rotate)
+            glRotatef(angle, 0, 1, 0);
+    
         shininess(true);
         glColor3f(col[0], col[1], col[2]);
         glutSolidTorus(0.1, 1, 16, 32);
@@ -69,5 +76,7 @@ void ring::draw() {
 }
 
 void ring::update(float dx, float dy, float dz) {
-    object::update(0, 0, 0.25);
+    angle += 15;
+    angle = (angle == 360) ? 0 : angle;
+    object::update(0, 0, SPEED);
 }

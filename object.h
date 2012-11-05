@@ -9,6 +9,8 @@
 #ifndef __StarTroupial__glObject__
 #define __StarTroupial__glObject__
 
+#define SPEED 0.5f
+
 #include <stdlib.h>
 #include "collisionManager.h"
 

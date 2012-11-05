@@ -31,9 +31,6 @@ class asteroid : public interactiveObject {
     
 protected:
     
-    // Angle for rotation
-    float angle;
-    
     // Sides of the asteroid
     int sides;
     

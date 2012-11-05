@@ -15,6 +15,12 @@ class ring : public interactiveObject {
     
 protected:
     
+    // Activates ring rotation
+    bool rotate;
+    
+    // Emission factor
+    float emission;
+    
     // Sets the shininess for a material
     void shininess(bool on);
     

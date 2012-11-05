@@ -21,6 +21,9 @@ protected:
     // Auments or decrements the player's score
     int factor;
     
+    // Angle for rotation
+    float angle;
+    
     // Initializes parameters
     virtual void init();
     

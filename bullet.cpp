@@ -27,7 +27,7 @@ void bullet::action() {
 }
 
 void bullet::update(float dx, float dy, float dz) {
-    object::update(0, 0, -0.5);
+    object::update(0, 0, -SPEED);
     dead |= z <= 30;
 }
 

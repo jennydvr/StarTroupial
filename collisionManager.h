@@ -34,7 +34,7 @@ public:
     boundingBox(float xi, float yi, float zi, float innerRadius, float outerRadius);
     
     // Constructor for sphere
-    boundingBox(float xi, float yi, float zi, float radius);
+    boundingBox(float xi, float yi, float zi, float radius, bool isShip = false);
     
     // Gets minimum point
     std::vector<float> getMin();

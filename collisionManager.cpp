@@ -36,11 +36,16 @@ boundingBox::boundingBox(float xi, float yi, float zi, float innerRadius, float 
     ymax *= 1.5f;
 }
 
-boundingBox::boundingBox(float xi, float yi, float zi, float radius) {
+boundingBox::boundingBox(float xi, float yi, float zi, float radius, bool isShip) {
     xmin = ymin = zmin = -radius;
     xmax = ymax = zmax = radius;
     
     update(xi, yi, zi);
+    
+    if (isShip) {
+        ymin *= 0.65f;
+        ymax *= 0.65f;
+    }
 }
 
 std::vector<float> boundingBox::getMin() {

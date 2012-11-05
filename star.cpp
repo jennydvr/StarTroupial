@@ -11,7 +11,7 @@
 star::star() : object(10, -10) {}
 
 void star::update(float dx, float dy, float dz) {
-    object::update(0, 0, 0.25);
+    object::update(0, 0, SPEED);
 }
 
 void star::draw() {

@@ -28,7 +28,7 @@ particle::particle(float a, float b, float c, float color[], float direction[]) 
 void particle::update(float dx, float dy, float dz) {
     if (dead) return;
     
-    object::update(0.25 * dir[0], 0.25 * dir[1], 0.25 * dir[2]);
+    object::update(SPEED * dir[0], SPEED * dir[1], SPEED * dir[2]);
     
     // Dead if distance equals 5
     float max = (x - ini[0]) * (x - ini[0]);
