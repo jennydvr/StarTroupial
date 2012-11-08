@@ -14,7 +14,7 @@ void star::update(float dx, float dy, float dz) {
     object::update(0, 0, SPEED);
 }
 
-void star::draw() {
+void star::draw(GLenum mode, int ident) {
     glPushMatrix();
         glTranslatef(x, y, z);
     

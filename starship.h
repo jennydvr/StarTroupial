@@ -28,13 +28,13 @@ public:
     starship();
     
     // Shoots
-    bullet shoot();
+    bullet shoot(float xf = -1, float yf = -1, float zf = -1);
     
     // Updates the ship's position
     void update(float dx, float dy, float dz = 0);
     
     // Draws the ship
-    void draw();
+    void draw(GLenum mode = GL_RENDER, int ident = 0);
     
     // Resets the ship
     void reset();

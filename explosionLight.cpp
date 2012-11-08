@@ -13,9 +13,9 @@ light::light(float a, float b, float c) : object(a, b, c) {
     GLfloat position[] = {a, b, c, 1};
     
     // Choose light - from LIGHT1 to LIGHT7
-    for (n = 0; n != 7 && USING[n]; ++n);
+    for (n = 0; n != 6 && USING[n]; ++n);
     
-    if (n == 7) // No available lights (should never happen)
+    if (n == 6) // No available lights (should never happen)
         return;
     
     USING[n] = true;

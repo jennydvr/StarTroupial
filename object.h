@@ -19,11 +19,6 @@ class object {
     
 protected:
     
-    // Position of the object
-    float x;
-    float y;
-    float z;
-    
     // Limits for the randomness
     int high;
     int low;
@@ -35,6 +30,11 @@ protected:
     void luminosity(float r = 0, float g = 0, float b = 0);
     
 public:
+    
+    // Position of the object
+    float x;
+    float y;
+    float z;
     
     // Indicates whether this object is dead or not
     bool dead;
@@ -55,7 +55,7 @@ public:
     virtual void update(float dx = 0, float dy = 0, float dz = 0);
     
     // Draws the object
-    virtual void draw();
+    virtual void draw(GLenum mode = GL_RENDER, int ident = 0);
 };
 
 #endif /* defined(__StarTroupial__glObject__) */

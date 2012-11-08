@@ -9,6 +9,7 @@
 #ifndef __StarTroupial__objectManager__
 #define __StarTroupial__objectManager__
 
+#include <time.h>
 #include <algorithm>
 #include <string.h>
 #include "starship.h"
@@ -29,12 +30,16 @@ extern vector<particle> particles;
 extern vector<light> lights;
 extern starship player;
 extern int score;
+
 extern int gametime;
+extern int initialGametime;
+extern int pausedTime;
+extern bool paused;
 
 void drawText(float pos[], char *text);
 void updateObjects();
 void addObjects();
-void drawObjects();
+void drawObjects(GLenum mode = GL_RENDER);
 void resetGame();
 bool checkGametime();
 

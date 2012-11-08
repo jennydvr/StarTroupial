@@ -26,7 +26,7 @@ void asteroid::init() {
     sides = rand() % 4 + 6;
     
     // Other stuff
-    factor = -1;
+    factor = -3;
     everExploded = false;
     interactiveObject::init();
 }
@@ -106,8 +106,11 @@ void asteroid::shininess(bool on) {
     glMaterialfv(GL_FRONT, GL_EMISSION, light);
 }
 
-void asteroid::draw() {
+void asteroid::draw(GLenum mode, int ident) {
     if (dead) return;
+    
+    if (mode == GL_SELECT)
+        glLoadName(ident);
     
     glPushMatrix();
         glRotatef(angle, x, y, z);
@@ -115,7 +118,9 @@ void asteroid::draw() {
     
         shininess(true);
         glColor4f(col[0], col[1], col[2], 0.75f);
+    
         glutSolidDodecahedron();
+    
         glColor4f(1, 1, 1, 1);
         shininess(false);
     glPopMatrix();

@@ -20,7 +20,6 @@ int gametime = 60;
 int score = 0;
 
 int currentTime = 0;
-int high = 4000, low = 2000;
 
 int ringsPrevTime = 0;
 int ringsRate = 3000;
@@ -29,6 +28,7 @@ int asteroidsPrevTime = 0;
 int asteroidsRate = 3000;
 
 int initialGametime = 0;
+int pausedTime = 0;
 
 bool notVisible(object object) {
     return !object.visible();
@@ -38,6 +38,11 @@ template <class T>
 void draw(T obj) {
     if (obj.visible())
         obj.draw();
+}
+
+void drawAsteroid(asteroid obj, int ident, GLenum mode) {
+    if (obj.visible())
+        obj.draw(mode, ident);
 }
 
 template <class T>
@@ -88,8 +93,11 @@ void removeObjects(vector<T> &v) {
 }
 
 bool checkGametime() {
-    int t = (glutGet(GLUT_ELAPSED_TIME) - initialGametime) / 1000;
-    gametime = gametime <= 0 ? 0 : 60 - t;
+    if (!paused) {
+        int t = (glutGet(GLUT_ELAPSED_TIME) - initialGametime) / 1000;
+        gametime = gametime <= 0 ? 0 : 60 - t;
+    }
+    
     return gametime == 0;
 }
 
@@ -99,37 +107,47 @@ void addRings() {
     if (currentTime - ringsPrevTime < ringsRate)
         return;
     
-    int n = rand() % 6;
+    int x, y;
     
-    if (n == 0) {           // Cross
-        rings.push_back(ring(0, 2));
-        rings.push_back(ring(0, -2));
-        rings.push_back(ring(-2.5, 0));
-        rings.push_back(ring(2.5, 0));
-    } else if (n == 1) {     // Tunnel
-        int x = (float)rand() / ((float)RAND_MAX / 8) - 4;
-        int y = (float)rand() / ((float)RAND_MAX / 8) - 4;
-        
-        rings.push_back(ring(x, y, 0));
-        rings.push_back(ring(x, y, -5));
-        rings.push_back(ring(x, y, -10));
-        rings.push_back(ring(x, y, -15));
-        rings.push_back(ring(x, y, -20));
-    } else if (n == 2) {     // Triforce
-        rings.push_back(ring(0, 1.75));
-        rings.push_back(ring(2, -1.75));
-        rings.push_back(ring(-2, -1.75));
-    } else if (n == 3) {     // 4 things on side
-        rings.push_back(ring(5, 1));
-        rings.push_back(ring(2.75, -1));
-        rings.push_back(ring(-5, 1));
-        rings.push_back(ring(-2.75, -1));
-    } else {     // 1 ring
-        rings.push_back(ring());
+    switch (rand() % 6) {
+        case 0:           // Cross
+            rings.push_back(ring(0, 2));
+            rings.push_back(ring(0, -2));
+            rings.push_back(ring(-2.5, 0));
+            rings.push_back(ring(2.5, 0));
+            break;
+            
+        case 1:     // Tunnel
+            x = (float)rand() / ((float)RAND_MAX / 8) - 4;
+            y = (float)rand() / ((float)RAND_MAX / 8) - 4;
+            
+            rings.push_back(ring(x, y, 0));
+            rings.push_back(ring(x, y, -5));
+            rings.push_back(ring(x, y, -10));
+            rings.push_back(ring(x, y, -15));
+            rings.push_back(ring(x, y, -20));
+            break;
+            
+        case 2:     // Triforce
+            rings.push_back(ring(0, 1.75));
+            rings.push_back(ring(2, -1.75));
+            rings.push_back(ring(-2, -1.75));
+            break;
+            
+        case 3:     // 4 things on side
+            rings.push_back(ring(5, 1));
+            rings.push_back(ring(2.75, -1));
+            rings.push_back(ring(-5, 1));
+            rings.push_back(ring(-2.75, -1));
+            break;
+            
+        default:     // 1 ring
+            rings.push_back(ring());
+            break;
     }
     
     // Choose next configuration and set time
-    ringsRate = rand() % (high - low) + low;
+    ringsRate = rand() % 2000 + 2000;
     ringsPrevTime = currentTime;
 }
 
@@ -139,39 +157,47 @@ void addAsteroids() {
     if (currentTime - asteroidsPrevTime < asteroidsRate)
         return;
     
-    int n = rand() % 6;
-    
-    if (n == 0) {           // Line
-        asteroids.push_back(asteroid(-6, 0));
-        asteroids.push_back(asteroid(-2, 0));
-        asteroids.push_back(asteroid(2, 0));
-        asteroids.push_back(asteroid(6, 0));
-    } else if (n == 1) {     // Triforce
-        asteroids.push_back(asteroid(0, 2));
-        asteroids.push_back(asteroid(2.5, -2));
-        asteroids.push_back(asteroid(-2.5, -2));        
-    } else if (n == 2) {     // V-shaped
-        asteroids.push_back(asteroid(6, 2.5));
-        asteroids.push_back(asteroid(3, 0));
-        asteroids.push_back(asteroid(0, -2.5));
-        asteroids.push_back(asteroid(-3, 0));
-        asteroids.push_back(asteroid(-6, 2.5));
-    } else if (n == 3) {     // X-shaped
-        asteroids.push_back(asteroid(6, 6));
-        asteroids.push_back(asteroid(3, 3));
-        asteroids.push_back(asteroid(6, -6));
-        asteroids.push_back(asteroid(3, -3));
-        asteroids.push_back(asteroid(0, 0));
-        asteroids.push_back(asteroid(-3, 3));
-        asteroids.push_back(asteroid(-6, 6));
-        asteroids.push_back(asteroid(-3, -3));
-        asteroids.push_back(asteroid(-6, -6));
-    } else {     // 1 ring
-        asteroids.push_back(asteroid());
+    switch (rand() % 6) {
+        case 0:           // Line
+            asteroids.push_back(asteroid(-6, 0));
+            asteroids.push_back(asteroid(-2, 0));
+            asteroids.push_back(asteroid(2, 0));
+            asteroids.push_back(asteroid(6, 0));
+            break;
+            
+        case 1:     // Triforce
+            asteroids.push_back(asteroid(0, 2));
+            asteroids.push_back(asteroid(2.5, -2));
+            asteroids.push_back(asteroid(-2.5, -2));
+            break;
+            
+        case 2:     // V-shaped
+            asteroids.push_back(asteroid(6, 2.5));
+            asteroids.push_back(asteroid(3, 0));
+            asteroids.push_back(asteroid(0, -2.5));
+            asteroids.push_back(asteroid(-3, 0));
+            asteroids.push_back(asteroid(-6, 2.5));
+            break;
+            
+        case 3:     // X-shaped
+            asteroids.push_back(asteroid(6, 6));
+            asteroids.push_back(asteroid(3, 3));
+            asteroids.push_back(asteroid(6, -6));
+            asteroids.push_back(asteroid(3, -3));
+            asteroids.push_back(asteroid(0, 0));
+            asteroids.push_back(asteroid(-3, 3));
+            asteroids.push_back(asteroid(-6, 6));
+            asteroids.push_back(asteroid(-3, -3));
+            asteroids.push_back(asteroid(-6, -6));
+            break;
+            
+        default:     // 1 ring
+            asteroids.push_back(asteroid());
+            break;
     }
     
     // Choose next configuration and set time
-    asteroidsRate = rand() % (high - low) + low;
+    asteroidsRate = rand() % 2000 + 2000;
     asteroidsPrevTime = currentTime;
 }
 
@@ -208,7 +234,7 @@ void addObjects() {
     addAsteroids();
 }
 
-void drawObjects() {
+void drawObjects(GLenum mode) {
     // Draw player
     player.draw();
     
@@ -225,7 +251,10 @@ void drawObjects() {
     for_each(rings.begin(), rings.end(), draw<ring>);
     
     // Draw asteroids
-    for_each(asteroids.begin(), asteroids.end(), draw<asteroid>);
+    //for_each(asteroids.begin(), asteroids.end(), draw<asteroid>);
+    
+    for (int i = 0; i != asteroids.size(); ++i)
+        drawAsteroid(asteroids[i], i, mode);
 }
 
 void resetGame() {

@@ -9,6 +9,8 @@
 #ifndef __StarTroupial__bullet__
 #define __StarTroupial__bullet__
 
+#define BULLET_SPEED 0.1f
+
 #include <iostream>
 #include "interactiveObject.h"
 
@@ -16,7 +18,17 @@ class bullet : public interactiveObject {
     
 protected:
     
-    // Initializes a ring
+    // Initial point
+    float xi;
+    float yi;
+    float zi;
+    
+    // Target
+    float xf;
+    float yf;
+    float zf;
+    
+    // Initializes the bullet
     void init();
     
     // Activated when hits something
@@ -25,13 +37,13 @@ protected:
 public:
     
     // Given-position constructor
-    bullet(float a, float b, bool kill = false);
+    bullet(float a, float b, float ta = 0, float tb = 0, float tc = 30, bool kill = false);
     
-    // Updates the ring's position
+    // Updates the bullet's position
     void update(float dx = 0, float dy = 0, float dz = 0);
     
     // Draws the ring
-    void draw();
+    void draw(GLenum mode = GL_RENDER, int ident = 0);
     
 };
 

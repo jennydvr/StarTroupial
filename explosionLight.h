@@ -12,10 +12,10 @@
 #include "object.h"
 
 // Lights
-static unsigned int LIGHTS[7] = {GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7};
+static unsigned int LIGHTS[6] = {GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7};
 
 // Available lights
-static bool USING[7] = {false, false, false, false, false, false, false};
+static bool USING[6] = {false, false, false, false, false, false};
 
 class light : public object {
     

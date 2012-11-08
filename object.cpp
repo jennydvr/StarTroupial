@@ -41,7 +41,7 @@ void object::update(float dx, float dy, float dz) {
     box.update(dx, dy, dz);
 }
 
-void object::draw() {
+void object::draw(GLenum mode, int ident) {
     if (dead) return;
     
     if (debug)

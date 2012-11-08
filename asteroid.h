@@ -69,7 +69,7 @@ public:
     void update(float dx = 0, float dy = 0, float dz = 0);
     
     // Draws the asteroid
-    void draw();
+    void draw(GLenum mode = GL_RENDER, int ident = 0);
     
 };
 

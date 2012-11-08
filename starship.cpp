@@ -13,15 +13,22 @@ starship::starship() : object(0, 0, 40) {
     current = previous = 0;
 }
 
-bullet starship::shoot() {
+bullet starship::shoot(float xf, float yf, float zf) {
     // Add bullet every second
     current = glutGet(GLUT_ELAPSED_TIME);
     
     if (current - previous < 500)
-        return bullet(0, 0, true);
+        return bullet(0, 0, xf, yf, zf, true);
     
     previous = current;
-    return bullet(x, y);
+    
+    if (xf == -1 && yf == -1 && zf == -1) {
+        xf = x;
+        yf = y;
+        zf = z - 10;
+    }
+    
+    return bullet(x, y, xf, yf, zf);
 }
 
 void starship::update(float dx, float dy, float dz) {
@@ -44,7 +51,7 @@ void starship::drawModel() {
     glmDraw(model, GLM_SMOOTH | GLM_MATERIAL);
 }
 
-void starship::draw() {
+void starship::draw(GLenum mode, int ident) {
     glPushMatrix();
         glTranslatef(x, y, z);
     

@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 Jenny Valdez. All rights reserved.
 //
 
-#include <time.h>
 #include "objectManager.h"
 
 using namespace std;
@@ -161,6 +160,11 @@ void keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 'p': case 'P':
             paused = !paused;
+            
+            if (paused)
+                pausedTime = glutGet(GLUT_ELAPSED_TIME);
+            else
+                initialGametime += glutGet(GLUT_ELAPSED_TIME) - pausedTime;
             break;
         case '+':
             fps *= (fps != 60) ? 2 : 1;
@@ -189,11 +193,74 @@ void keyboard(unsigned char key, int x, int y) {
         case 'd': case 'D':      // Right -> -x
             player.update(0.25, 0);
             break;
-        case ' ':                // Add bullet
-            bullets.push_back(player.shoot());
-            break;
     }
     
+    glutPostRedisplay();
+}
+
+#define BUFSIZE 512
+
+void processHits(GLint hits, GLuint buffer[]) {
+    
+	unsigned int j = 0, menor = buffer[1], ident = 0;
+	GLuint numNames;
+    
+    if (hits == 0) {      // No intersections with asteroids
+        bullets.push_back(player.shoot(-1, -1, -1));
+        return;
+    }
+    
+	for (int i = 0; i != hits; ++i) {
+		numNames = buffer[j];
+		
+		if (menor >= buffer[j+1]) {
+			menor =	buffer[j+1];
+			ident = buffer[(j+2) + 1];
+		}
+        
+		j = (j + 4) + (numNames - 1);
+	}
+    
+    bullets.push_back(player.shoot(asteroids[ident].x, asteroids[ident].y, asteroids[ident].z));
+}
+
+void pick(int button, int state, int x, int y) {
+	GLuint selectBuf[BUFSIZE];
+	GLint hits, viewport[4];
+    
+	if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
+		return;
+    
+	glGetIntegerv(GL_VIEWPORT, viewport);
+    glSelectBuffer(BUFSIZE, selectBuf);
+    
+	glRenderMode(GL_SELECT);
+    
+	glInitNames();
+	glPushName(0);
+    
+ 	glMatrixMode(GL_PROJECTION);
+ 	glPushMatrix();
+        glLoadIdentity();
+    
+        gluPickMatrix(GLfloat(x), GLfloat(viewport[3] - y), 1.0, 1.0, viewport);
+        gluPerspective(90, GLfloat(viewport[2])/GLfloat(viewport[3]), 0.0001, 1000.0);
+    
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+            glLoadIdentity ();
+            gluLookAt(0, 0, 50, 0, 0, 0, 0, 1, 0);
+    
+            drawObjects(GL_SELECT);
+        glPopMatrix();
+    
+        glMatrixMode(GL_PROJECTION);
+ 	glPopMatrix();
+    glFlush();
+	
+	hits = glRenderMode (GL_RENDER);
+	
+	processHits (hits, selectBuf);
     glutPostRedisplay();
 }
 
@@ -207,6 +274,7 @@ int main(int argc, char** argv) {
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+	glutMouseFunc(pick);
     glutTimerFunc(1000 / fps, timer, 0);
     
     init();

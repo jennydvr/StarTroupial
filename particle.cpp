@@ -30,7 +30,7 @@ void particle::update(float dx, float dy, float dz) {
     
     object::update(SPEED * dir[0], SPEED * dir[1], SPEED * dir[2]);
     
-    // Dead if distance equals 5
+    // Dead if distance equals 20 (I think...)
     float max = (x - ini[0]) * (x - ini[0]);
     max += (y - ini[1]) * (y - ini[1]);
     max += (z - ini[2]) * (z - ini[2]);
@@ -38,7 +38,7 @@ void particle::update(float dx, float dy, float dz) {
     dead = max >= 400;
 }
 
-void particle::draw() {
+void particle::draw(GLenum mode, int ident) {
     if (dead) return;
     
     glPushMatrix();

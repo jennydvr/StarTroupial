@@ -57,7 +57,7 @@ void ring::shininess(bool on) {
     glMaterialfv(GL_FRONT, GL_EMISSION, light);
 }
 
-void ring::draw() {
+void ring::draw(GLenum mode, int ident) {
     glPushMatrix();
         glScalef(1, 1.5, 1);
         glTranslatef(x, y, z);
