@@ -8,6 +8,8 @@
 
 #include "soundManager.h"
 
+#ifdef USE_SOUNDS
+
 using namespace std;
 
 ALuint buffer[4];
@@ -170,3 +172,5 @@ void playExplosionSong() {
 void playBackgroundSong() {
     alSourcePlay(source[3]);
 }
+
+#endif

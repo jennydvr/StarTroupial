@@ -1,18 +1,18 @@
 CXX = g++ 
 CXXFLAGS = -std=gnu++0x -Os -w
-#LDLIBS = -lglut -lGL -lGLU -lX11 -lm -L/usr/X11R6/lib -lopenal
-LDLIBS = -framework OpenGL -framework GLUT -framework OpenAL 
+LDLIBS = -lglut -lGL -lGLU -lX11 -lm -L/usr/X11R6/lib -lopenal
+#LDLIBS = -framework OpenGL -framework GLUT -framework OpenAL 
 
 build-exec = $(CXX) $(CXXFLAGS) $(LDLIBS) -o $@ $^
 
 .PHONY: all clean
 
-all: StarTroupial
-clean: ; rm -f ./*.o ./*.gch StarTroupial
+all: playGame
+clean: ; rm -f ./*.o ./*.gch playGame
 
 %.o: %.cpp ; $(CXX) $(CXXFLAGS) $(LDLIBS) -c $<
 
-StarTroupial: main.o objectManager.o star.o asteroid.o ring.o starship.o bullet.o explosionLight.o particle.o interactiveObject.o object.o collisionManager.o  soundManager.o glm.o; $(build-exec)
+playGame: main.o objectManager.o star.o asteroid.o ring.o starship.o bullet.o explosionLight.o particle.o interactiveObject.o object.o collisionManager.o  soundManager.o glm.o; $(build-exec)
 	
 main.o: main.cpp objectManager.h
 objectManager.o: objectManager.cpp objectManager.h

@@ -65,7 +65,10 @@ light asteroid::createLight() {
 
 void asteroid::action() {
     dead = true;
+    
+#ifdef USE_SOUNDS
     playExplosionSong();
+#endif
 }
 
 void asteroid::randomColor() {

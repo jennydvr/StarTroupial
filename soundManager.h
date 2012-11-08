@@ -9,6 +9,10 @@
 #ifndef __StarTroupial__soundManager__
 #define __StarTroupial__soundManager__
 
+#include "config.h"
+
+#ifdef USE_SOUNDS
+
 #if defined(__APPLE__) || defined(MACOSX)
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
@@ -27,4 +31,5 @@ void playRingsSong();
 void playExplosionSong();
 void playBackgroundSong();
 
+#endif
 #endif /* defined(__StarTroupial__soundManager__) */

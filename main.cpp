@@ -281,7 +281,9 @@ int main(int argc, char** argv) {
     init();
     
     // Initialize sounds
+#ifdef USE_SOUNDS
     initSounds();
+#endif
     
     glutMainLoop();
 }

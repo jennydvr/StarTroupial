@@ -34,7 +34,9 @@ void ring::action() {
     emission = 0.25f;
     rotate = true;
     
+#ifdef USE_SOUNDS
     playRingsSong();
+#endif
 }
 
 void ring::shininess(bool on) {

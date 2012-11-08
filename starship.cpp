@@ -28,7 +28,10 @@ bullet starship::shoot(float xf, float yf, float zf) {
         zf = z - 10;
     }
     
+    
+#ifdef USE_SOUNDS
     playShootingSong();
+#endif
     return bullet(x, y, xf, yf, zf);
 }
 
