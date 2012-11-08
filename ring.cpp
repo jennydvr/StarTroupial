@@ -33,6 +33,8 @@ void ring::action() {
     col[0] = 0.85; col[1] = 0.7;
     emission = 0.25f;
     rotate = true;
+    
+    playRingsSong();
 }
 
 void ring::shininess(bool on) {

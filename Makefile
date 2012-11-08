@@ -1,7 +1,7 @@
 CXX = g++ 
 CXXFLAGS = -std=gnu++0x -Os -w
-#LDLIBS = -lglut -lGL -lGLU -lX11  -lm -L/usr/X11R6/lib
-LDLIBS = -framework OpenGL -framework GLUT
+#LDLIBS = -lglut -lGL -lGLU -lX11 -lm -L/usr/X11R6/lib -lopenal
+LDLIBS = -framework OpenGL -framework GLUT -framework OpenAL 
 
 build-exec = $(CXX) $(CXXFLAGS) $(LDLIBS) -o $@ $^
 

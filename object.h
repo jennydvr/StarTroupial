@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include "collisionManager.h"
+#include "soundManager.h"
 
 // Base class for any OpenGL object
 class object {

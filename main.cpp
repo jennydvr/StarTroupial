@@ -277,7 +277,11 @@ int main(int argc, char** argv) {
 	glutMouseFunc(pick);
     glutTimerFunc(1000 / fps, timer, 0);
     
+    // Initialize visual stuff
     init();
+    
+    // Initialize sounds
+    initSounds();
     
     glutMainLoop();
 }

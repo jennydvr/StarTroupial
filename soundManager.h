@@ -11,15 +11,20 @@
 
 #if defined(__APPLE__) || defined(MACOSX)
 #include <OpenAL/al.h>
+#include <OpenAL/alc.h>
 #else
-#include <AL/alut.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 #endif
 
 #include <cstring>
+#include <cstdio>
 #include <iostream>
 
 void initSounds();
-void playBackgroundSong();
+void playShootingSong();
 void playRingsSong();
+void playExplosionSong();
+void playBackgroundSong();
 
 #endif /* defined(__StarTroupial__soundManager__) */

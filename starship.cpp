@@ -28,6 +28,7 @@ bullet starship::shoot(float xf, float yf, float zf) {
         zf = z - 10;
     }
     
+    playShootingSong();
     return bullet(x, y, xf, yf, zf);
 }
 
@@ -37,7 +38,7 @@ void starship::update(float dx, float dy, float dz) {
 
 void starship::drawModel() {
     if (!model) {
-        char filename[16] = "ship.obj";
+        char filename[32] = "resources/ship.obj";
         model = glmReadOBJ(filename);
         
         if (!model)
