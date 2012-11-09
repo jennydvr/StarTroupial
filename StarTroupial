@@ -6,11 +6,13 @@
 #  Created by Jenny Valdez on 08/11/12.
 #  Copyright (c) 2012 Jenny Valdez. All rights reserved.
 
-if gcc testOpenAL.h -Wall
+if gcc testOpenAL.h
 then
     echo '#define USE_SOUNDS true' > config.h
+    echo 'Using sounds...'
 else
     echo '' > config.h
+    echo 'NOT using sounds...'
 fi
 
 make

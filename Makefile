@@ -1,5 +1,5 @@
 CXX = g++ 
-CXXFLAGS = -std=gnu++0x -Os -w
+CXXFLAGS = -Os -w
 LDLIBS = -lglut -lGL -lGLU -lX11 -lm -L/usr/X11R6/lib -lopenal
 #LDLIBS = -framework OpenGL -framework GLUT -framework OpenAL 
 
@@ -26,5 +26,5 @@ star.o: star.cpp star.h
 interactiveObject.o: interactiveObject.cpp interactiveObject.h
 object.o: object.cpp object.h
 collisionManager.o: collisionManager.cpp collisionManager.h
-soundManager.o: soundManager.cpp soundManager.h
+soundManager.o: soundManager.cpp soundManager.h config.h
 glm.o: glm.cpp glm.h
