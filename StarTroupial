@@ -10,10 +10,11 @@ if gcc testOpenAL.h
 then
     echo '#define USE_SOUNDS true' > config.h
     echo 'Using sounds...'
+    make MUSIC="m"
 else
     echo '' > config.h
     echo 'NOT using sounds...'
+    make
 fi
 
-make
 ./playGame
