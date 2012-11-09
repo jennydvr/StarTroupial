@@ -1,12 +1,12 @@
 CXX = g++ 
 CXXFLAGS = -Os -w
 
-#LDLIBS = -lglut -lGL -lGLU -lX11 -lm -L/usr/X11R6/lib
-LDLIBS = -framework OpenGL -framework GLUT
+LDLIBS = -lglut -lGL -lGLU -lX11 -lm -L/usr/X11R6/lib
+#LDLIBS = -framework OpenGL -framework GLUT
 
 ifeq ($(MUSIC), m)
-#	LDLIBS = -lglut -lGL -lGLU -lX11 -lm -L/usr/X11R6/lib -lopenal
-	LDLIBS = -framework OpenGL -framework GLUT -framework OpenAL
+	LDLIBS = -lglut -lGL -lGLU -lX11 -lm -L/usr/X11R6/lib -lopenal
+#	LDLIBS = -framework OpenGL -framework GLUT -framework OpenAL
 endif
 
 build-exec = $(CXX) $(CXXFLAGS) $(LDLIBS) -o $@ $^
