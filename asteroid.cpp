@@ -21,7 +21,6 @@ void asteroid::init() {
     box = boundingBox(x, y, z, 1.25f);
     
     // Set drawing variables
-    randomColor();
     angle = 0;
     sides = rand() % 4 + 6;
     
@@ -37,24 +36,22 @@ std::vector<particle> asteroid::explode() {
     if (everExploded || !dead)
         return ans;
     
-    for (int i = 0; i != 26; ++i) {
+    for (int n = rand() % 100 + 100; n != 0; --n) {
         float ax = (float)rand()/((float)RAND_MAX/(2)) -2 + x;
         float ay = (float)rand()/((float)RAND_MAX/(2)) -2 + y;
         float az = (float)rand()/((float)RAND_MAX/(2)) -2 + z;
         
-        ans.push_back(particle(ax, ay, az, col, DEXP[i]));
+        // Direction vector cannot be 0!
+        float dir[3] = {0, 0, 0};
+        while (dir[0] == 0 && dir[1] == 0 && dir[2] == 0) {
+            dir[0] = (float)rand()/((float)RAND_MAX/4) - 2;
+            dir[1] = (float)rand()/((float)RAND_MAX/4) - 2;
+            dir[2] = (float)rand()/((float)RAND_MAX/4) - 2;
+        }
         
-        ax = (float)rand()/((float)RAND_MAX/(2)) -2 + x;
-        ay = (float)rand()/((float)RAND_MAX/(2)) -2 + y;
-        az = (float)rand()/((float)RAND_MAX/(2)) -2 + z;
-        ans.push_back(particle(ax, ay, az, col, DEXP[i]));
-        
-        ax = (float)rand()/((float)RAND_MAX/(2)) -2 + x;
-        ay = (float)rand()/((float)RAND_MAX/(2)) -2 + y;
-        az = (float)rand()/((float)RAND_MAX/(2)) -2 + z;
-        ans.push_back(particle(ax, ay, az, col, DEXP[i]));
+        ans.push_back(particle(ax, ay, az, dir));
     }
-        
+    
     everExploded = true;
     return ans;
 }
@@ -63,29 +60,9 @@ light asteroid::createLight() {
     return light(x, y, z);
 }
 
-void asteroid::action() {
+void asteroid::action(int factor) {
     dead = true;
-    
-#ifdef USE_SOUNDS
     playExplosionSong();
-#endif
-}
-
-void asteroid::randomColor() {
-    switch (rand() % 8) {
-        case 0: case 1: case 2:
-            col[0] = 0.1; col[1] = 0.544; col[2] = 0.544;
-            break;
-        case 3: case 4:
-            col[0] = 0.5745f; col[1] = 0.1175f; col[2] = 0.1175f;
-            break;
-        case 5:
-            col[0] = 0.215f; col[1] = 0.5174f; col[2] = 0.215f;
-            break;
-        default:
-            col[0] = 0.55f; col[1] = 0.50725f; col[2] = 0.50725f;
-            break;
-    }
 }
 
 void asteroid::shininess(bool on) {
@@ -113,6 +90,10 @@ void asteroid::shininess(bool on) {
 void asteroid::draw(GLenum mode, int ident) {
     if (dead) return;
     
+    col[0] = (float)rand()/(float)RAND_MAX;
+    col[1] = (float)rand()/(float)RAND_MAX;
+    col[2] = (float)rand()/(float)RAND_MAX;
+    
     if (mode == GL_SELECT)
         glLoadName(ident);
     
@@ -122,9 +103,7 @@ void asteroid::draw(GLenum mode, int ident) {
     
         shininess(true);
         glColor4f(col[0], col[1], col[2], 0.75f);
-    
         glutSolidDodecahedron();
-    
         glColor4f(1, 1, 1, 1);
         shininess(false);
     glPopMatrix();

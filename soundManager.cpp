@@ -8,14 +8,13 @@
 
 #include "soundManager.h"
 
-#ifdef USE_SOUNDS
-
 using namespace std;
 
-ALuint buffer[4];
-ALuint source[4];
+unsigned int buffer[4];
+unsigned int source[4];
 
-void readWAVFile(const char *filename, ALenum &format, unsigned char *&data, ALsizei &dataSize, ALsizei &frequency) {
+void readWAVFile(const char *filename, int &format, unsigned char *&data, int &dataSize, int &frequency) {
+#ifdef USE_SOUNDS
     FILE *file = fopen(filename, "rb");
     
     if (!file) {
@@ -94,11 +93,13 @@ void readWAVFile(const char *filename, ALenum &format, unsigned char *&data, ALs
     }
     
     fclose(file);
+#endif
 }
 
-void fillSource(int i, int loop = AL_FALSE) {
-    ALfloat pos[] = {0, 0, 0};
-    ALfloat vel[] = {0, 0, 0};
+void fillSource(int i, int loop = 0) {
+#ifdef USE_SOUNDS
+    float pos[] = {0, 0, 0};
+    float vel[] = {0, 0, 0};
     
     alSourcef(source[i], AL_PITCH, 1);
     alSourcef(source[i], AL_GAIN, 1);
@@ -106,9 +107,12 @@ void fillSource(int i, int loop = AL_FALSE) {
     alSourcefv(source[i], AL_VELOCITY, vel);
     alSourcei(source[i], AL_BUFFER, buffer[i]);
     alSourcei(source[i], AL_LOOPING, loop);
+#endif
 }
 
 void initSounds() {
+#ifdef USE_SOUNDS
+    
     // Initialize sounds
     ALCdevice *device = alcOpenDevice(NULL);
     ALCcontext *context = alcCreateContext(device, NULL);
@@ -155,22 +159,29 @@ void initSounds() {
     fillSource(3, AL_TRUE);
     
     playBackgroundSong();
+#endif
 }
 
 void playRingsSong() {
+#ifdef USE_SOUNDS
     alSourcePlay(source[0]);
+#endif
 }
 
 void playShootingSong() {
+#ifdef USE_SOUNDS
     alSourcePlay(source[1]);
+#endif
 }
 
 void playExplosionSong() {
+#ifdef USE_SOUNDS
     alSourcePlay(source[2]);
+#endif
 }
 
 void playBackgroundSong() {
+#ifdef USE_SOUNDS
     alSourcePlay(source[3]);
-}
-
 #endif
+}

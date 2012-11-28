@@ -8,14 +8,10 @@
 
 #include "particle.h"
 
-particle::particle(float a, float b, float c, float color[], float direction[]) : object(a, b, c) {
+particle::particle(float a, float b, float c, float direction[]) : object(a, b, c) {
     ini[0] = a;
     ini[1] = b;
     ini[2] = c;
-    
-    col[0] = color[0];
-    col[1] = color[1];
-    col[2] = color[2];
     
     dir[0] = direction[0];
     dir[1] = direction[1];
@@ -40,6 +36,10 @@ void particle::update(float dx, float dy, float dz) {
 
 void particle::draw(GLenum mode, int ident) {
     if (dead) return;
+    
+    col[0] = (float)rand()/(float)RAND_MAX;
+    col[1] = (float)rand()/(float)RAND_MAX;
+    col[2] = (float)rand()/(float)RAND_MAX;
     
     glPushMatrix();
         glTranslatef(x, y, z);

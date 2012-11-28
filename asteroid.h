@@ -15,20 +15,6 @@
 #include "particle.h"
 #include "explosionLight.h"
 
-// Explosion - Directional vectors
-static float DEXP[42][3] = {
-    {0, 0, 1}, {0, 0, -1}, {0, 1, 0}, {0, -1, 0}, {1, 0, 0}, {-1, 0, 0},
-    {0, 1, 1}, {0, 1, -1}, {0, -1, 1}, {0, -1, -1},
-    {1, 0, 1}, {1, 0, -1}, {-1, 0, 1}, {-1, 0, -1},
-    {1, 1, 0}, {1, -1, 0}, {-1, 1, 0}, {-1, -1, 0},
-    {1, 1, 1}, {1, 1, -1}, {1, -1, 1}, {-1, 1, 1},
-    {1, -1, -1}, {-1, 1, -1}, {-1, -1, 1}, {-1, -1, -1},
-    {0, 0.75, 0.25}, {0, 0.75, -0.25}, {0, -0.75, 0.25}, {0, -0.75, -0.25},
-    {0, 0.25, 0.75}, {0, 0.25, -0.75}, {0, -0.25, 0.75}, {0, -0.25, -0.75},
-    {0.75, 0, 0.25}, {0.75, 0, -0.25}, {-0.75, 0, 0.25}, {-0.75, 0, -0.25},
-    {0.25, 0, 0.75}, {0.25, 0, -0.75}, {-0.25, 0, 0.75}, {-0.25, 0, -0.75}
-};
-
 class asteroid : public interactiveObject {
     
 protected:
@@ -38,9 +24,6 @@ protected:
     
     // Initializes an asteroid
     void init();
-    
-    // Choose a semi-random color for the asteroid
-    void randomColor();
     
     // Sets material values
     void shininess(bool on);
@@ -63,7 +46,7 @@ public:
     light createLight();
     
     // Activated when hits something
-    void action();
+    void action(int factor = 0);
     
     // Updates the asteroid's position
     void update(float dx = 0, float dy = 0, float dz = 0);

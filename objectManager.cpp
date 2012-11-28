@@ -52,16 +52,17 @@ void update(T &obj) {
 
 template <class T>
 void updatePoints(T &obj) {
-    score += obj.updateScore(player);  // ALWAYS EXECUTE THIS
-    score = (score < 0) ? 0 : score;   // CHECK THE SCORE LATER
+    obj.hits(player);
+    score = player.score;
     obj.update();
 }
 
 void updateHits(bullet &obj) {
-    for (int i = 0; i != asteroids.size(); ++i)
-        if ((obj.dead = asteroids[i].hits(obj))) {
+    for (int i = 0; i != asteroids.size(); ++i) {
+        asteroids[i].hits(obj);
+        if (obj.dead)
             break;
-        }
+    }
     
     obj.update();
 }
@@ -209,6 +210,7 @@ void updateObjects() {
     for_each(stars.begin(), stars.end(), update<star>);
     for_each(particles.begin(), particles.end(), update<particle>);
     for_each(lights.begin(), lights.end(), update<light>);
+    player.update();
     
     // Add particles
     for_each(asteroids.begin(), asteroids.end(), updateParticles);
@@ -250,9 +252,6 @@ void drawObjects(GLenum mode) {
     // Draw rings
     for_each(rings.begin(), rings.end(), draw<ring>);
     
-    // Draw asteroids
-    //for_each(asteroids.begin(), asteroids.end(), draw<asteroid>);
-    
     for (int i = 0; i != asteroids.size(); ++i)
         drawAsteroid(asteroids[i], i, mode);
 }
@@ -267,6 +266,7 @@ void resetGame() {
     // DISABLE ALL LIGHTS!!
     for_each(lights.begin(), lights.end(), light::disable);
     lights.clear();
+    glDisable(GL_LIGHT1);
     
     score = 0;
     player.reset();

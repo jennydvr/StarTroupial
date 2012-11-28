@@ -14,6 +14,7 @@ using namespace std;
 bool paused = false;
 float fps = 60;
 bool gameOver = false;
+int vx = 0, vy = 0;
 
 // Draws a text on screen
 void drawText(float pos[], char *text) {
@@ -103,7 +104,6 @@ void timer(int v) {
     if (gameOver) {
         paused = debug = false;
         fps = 60;
-        glutPostRedisplay();
         glutTimerFunc(1000 / fps, timer, 0);
         return;
     }
@@ -179,22 +179,36 @@ void keyboard(unsigned char key, int x, int y) {
     
     if (paused)
         return;
+
     
-    switch (key) {
-        case 'w': case 'W':       // Up -> +y
-            player.update(0, 0.25);
-            break;
-        case 's': case 'S':      // Down -> -y
-            player.update(0, -0.25);
-            break;
-        case 'a': case 'A':      // Left -> +x
-            player.update(-0.25, 0);
-            break;
-        case 'd': case 'D':      // Right -> -x
-            player.update(0.25, 0);
-            break;
-    }
+    // Move the ship
+    if (key == 'w' || key == 'W')       // Up -> +y
+        vy = 1;
+    else if (key == 's' || key == 'S')  // Down -> -y
+        vy = -1;
     
+    if (key == 'a' || key == 'A')       // Left -> -x
+        vx = -1;
+    else if (key == 'd' || key == 'D')  // Right -> +x
+        vx = 1;
+    
+    player.changeVelocity(vx, vy);
+    glutPostRedisplay();
+}
+
+void keyUp(unsigned char key, int x, int y) {
+    // Stop movement
+    if (key == 'w' || key == 'W')       // Up -> +y
+        vy = 0;
+    else if (key == 's' || key == 'S')  // Down -> -y
+        vy = 0;
+    
+    if (key == 'a' || key == 'A')       // Left -> -x
+        vx = 0;
+    else if (key == 'd' || key == 'D')  // Right -> +x
+        vx = 0;
+    
+    player.changeVelocity(vx, vy);
     glutPostRedisplay();
 }
 
@@ -274,6 +288,7 @@ int main(int argc, char** argv) {
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+    glutKeyboardUpFunc(keyUp);
 	glutMouseFunc(pick);
     glutTimerFunc(1000 / fps, timer, 0);
     

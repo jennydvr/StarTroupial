@@ -30,7 +30,7 @@ protected:
 public:
     
     // Constructor
-    particle(float a, float b, float c, float color[], float direction[]);
+    particle(float a, float b, float c, float direction[]);
     
     // Updates star
     void update(float dx = 0, float dy = 0, float dz = 0);

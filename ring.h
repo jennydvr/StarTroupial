@@ -36,7 +36,7 @@ public:
     ring(float a, float b, float c = 0);
     
     // Activated when hits something
-    void action();
+    void action(int factor = 0);
     
     // Updates the ring's position
     void update(float dx = 0, float dy = 0, float dz = 0);

@@ -11,27 +11,43 @@
 
 #include "bullet.h"
 
-class starship : public object {
+class starship : public interactiveObject {
     
     // Mesh of the starship
     GLMmodel* model;
     
     // Time for shooting
-    int current, previous;
+    int currentShooting, previousShooting;
     
     // Draw the model
-    void drawModel();
+    void drawModel(bool withoutTexture = true);
+    
+    // Invulnerability
+    int currentInv, previousInv, previousText;
+    bool texturize;
     
 public:
+    
+    // Player's score
+    int score;
+    
+    // Player's velocity
+    float velocity[2];
     
     // Constructor
     starship();
     
+    // Changes the ship's velocity
+    void changeVelocity(int dx, int dy);
+    
     // Shoots
     bullet shoot(float xf = -1, float yf = -1, float zf = -1);
     
+    // Activated when hitted by something
+    void action(int factor = 0);
+    
     // Updates the ship's position
-    void update(float dx, float dy, float dz = 0);
+    void update(float dx = 0, float dy = 0, float dz = 0);
     
     // Draws the ship
     void draw(GLenum mode = GL_RENDER, int ident = 0);

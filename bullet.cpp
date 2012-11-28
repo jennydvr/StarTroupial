@@ -37,7 +37,7 @@ void bullet::init() {
     glEnable(GL_LIGHT1);
 }
 
-void bullet::action() {
+void bullet::action(int factor) {
     dead = true;
     glDisable(GL_LIGHT1);
 }

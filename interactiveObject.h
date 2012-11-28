@@ -15,7 +15,7 @@ class interactiveObject : public object {
 
 protected:
     
-    // Shows if the object has ever been touched by the ship
+    // Shows if the object has ever been touched by any object
     bool touched;
     
     // Auments or decrements the player's score
@@ -36,13 +36,10 @@ public:
     interactiveObject(float a, float b, float c = 0);
     
     // Activates when there is a collision
-    virtual void action();
+    virtual void action(int factor = 0);
     
     // Checks collision with certain object
-    bool hits(object obj);
-    
-    // Calculates if the score is affected or not
-    int updateScore(object player);
+    bool hits(interactiveObject &obj);
     
 };
 

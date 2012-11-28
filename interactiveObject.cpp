@@ -16,26 +16,17 @@ void interactiveObject::init() {
     touched = false;
 }
 
-void interactiveObject::action() {}
+void interactiveObject::action(int factor) {}
 
-int interactiveObject::updateScore(object player) {
-    // If already touched, nothing to update
-    if (touched)
-        return 0;
-    
-    // If hits, return factor
-    return hits(player) ? factor : 0;
-}
-
-bool interactiveObject::hits(object obj) {
+bool interactiveObject::hits(interactiveObject &obj) {
     // If it has already been touched, can't hit again
     if (touched)
         return false;
     
     // Check if there is a collision - if it does, take action
     if ((touched = collision(obj.box, box))) {
-        action();
-        obj.dead = true;
+        action(factor);
+        obj.action(factor);
     }
     
     // Return the result of the checking

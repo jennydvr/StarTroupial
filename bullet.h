@@ -31,13 +31,13 @@ protected:
     // Initializes the bullet
     void init();
     
-    // Activated when hits something
-    void action();
-    
 public:
     
     // Given-position constructor
     bullet(float a, float b, float ta = 0, float tb = 0, float tc = 30, bool kill = false);
+    
+    // Activated when hits something
+    void action(int factor = 0);
     
     // Updates the bullet's position
     void update(float dx = 0, float dy = 0, float dz = 0);
