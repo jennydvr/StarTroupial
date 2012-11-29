@@ -110,7 +110,7 @@ void addRings() {
     
     int x, y;
     
-    switch (rand() % 6) {
+    switch (rand() % 10) {
         case 0:           // Cross
             rings.push_back(ring(0, 2));
             rings.push_back(ring(0, -2));
@@ -141,7 +141,48 @@ void addRings() {
             rings.push_back(ring(-5, 1));
             rings.push_back(ring(-2.75, -1));
             break;
+	    
+        case 4:     // Tunnel Diagonal I Cuadrante
+            x = (float)rand() / ((float)RAND_MAX / 8) - 4;
+            y = (float)rand() / ((float)RAND_MAX / 8) - 4;
             
+            rings.push_back(ring(x, y, 0));
+            rings.push_back(ring(x+1, y+1, -5));
+            rings.push_back(ring(x+2, y+2, -7));
+            rings.push_back(ring(x+3, y+3, -9));
+            rings.push_back(ring(x+4, y+4, -11));
+            break;
+        case 5:     // Tunnel Diagonal II Cuadrante
+            x = (float)rand() / ((float)RAND_MAX / 8) - 4;
+            y = (float)rand() / ((float)RAND_MAX / 8) - 4;
+            
+            rings.push_back(ring(x, y, 0));
+            rings.push_back(ring(x-1, y+1, -5));
+            rings.push_back(ring(x-2, y+2, -7));
+            rings.push_back(ring(x-3, y+3, -9));
+            rings.push_back(ring(x-4, y+4, -11));
+            break;
+        case 6:     // Tunnel Diagonal III Cuadrante
+            x = (float)rand() / ((float)RAND_MAX / 8) - 4;
+            y = (float)rand() / ((float)RAND_MAX / 8) - 4;
+            
+            rings.push_back(ring(x, y, 0));
+            rings.push_back(ring(x-1, y-1, -5));
+            rings.push_back(ring(x-2, y-2, -7));
+            rings.push_back(ring(x-3, y-3, -9));
+            rings.push_back(ring(x-4, y-4, -11));
+            break;
+        case 7:     // Tunnel Diagonal IV Cuadrante
+            x = (float)rand() / ((float)RAND_MAX / 8) - 4;
+            y = (float)rand() / ((float)RAND_MAX / 8) - 4;
+            
+            rings.push_back(ring(x, y, 0));
+            rings.push_back(ring(x+1, y-1, -5));
+            rings.push_back(ring(x+2, y-2, -7));
+            rings.push_back(ring(x+3, y-3, -9));
+            rings.push_back(ring(x+4, y-4, -11));
+            break;	    
+	    
         default:     // 1 ring
             rings.push_back(ring());
             break;
