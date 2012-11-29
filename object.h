@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include "collisionManager.h"
 #include "soundManager.h"
+#include "Texture.h"
 
 // Base class for any OpenGL object
 class object {
@@ -27,8 +28,14 @@ protected:
     // Current color of the object
     float col[3];
     
+    // Texture of the object
+    Texture texture;
+    
     // Activates star luminosity
     void luminosity(float r = 0, float g = 0, float b = 0);
+    
+    // Loads a texture
+    void loadTexture(char *name);
     
 public:
     

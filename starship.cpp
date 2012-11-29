@@ -14,6 +14,7 @@ starship::starship() : interactiveObject(0, 0, 40) {
     previousShooting = previousText = score = 0;
     texturize = true;
     velocity[0] = velocity[1] = 0;
+    texture.created = false;
 }
 
 bullet starship::shoot(float xf, float yf, float zf) {
@@ -67,8 +68,16 @@ void starship::update(float dx, float dy, float dz) {
 
 void starship::drawModel(bool withoutTexture) {
     glDisable(GL_COLOR_MATERIAL);
+    
+    // Lazy texture creation - only when neccessary
+    if (!texture.created) {
+        char name[32] = "resources/s_1024_C.tga";
+        loadTexture(name);
+    }
+    
+    // Lazy model creation
     if (!model) {
-        char filename[32] = "resources/ship.obj";
+        char filename[32] = "resources/shipA_OBJ.obj";
         model = glmReadOBJ(filename);
         
         if (!model)
@@ -79,14 +88,21 @@ void starship::drawModel(bool withoutTexture) {
         glmVertexNormals(model, 90);
     }
     
-    if (withoutTexture)
+    // If the texture doesn't exists or draw without texture
+    if (!texture.created || withoutTexture)
         glmDraw(model, GLM_SMOOTH);
-    else
-        glmDraw(model, GLM_SMOOTH | GLM_MATERIAL);
+        
+    // If texture exists and draw with texture
+    else {
+        glBindTexture(GL_TEXTURE_2D, texture.texID);
+        glmDraw(model, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
+    }
+    
     glEnable(GL_COLOR_MATERIAL);
 }
 
 void starship::draw(GLenum mode, int ident) {
+    // Every 50 miliseconds update texturize
     if (glutGet(GLUT_ELAPSED_TIME) - previousText >= 50) {
         previousText = glutGet(GLUT_ELAPSED_TIME);
         texturize = !texturize;
@@ -98,7 +114,6 @@ void starship::draw(GLenum mode, int ident) {
         glColor3f(1, 0, 0);
         drawModel(glutGet(GLUT_ELAPSED_TIME) - previousInv < 2000 && !texturize);
         glColor3f(0, 0, 0);
-    
     glPopMatrix();
     
     object::draw();

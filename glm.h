@@ -9,7 +9,7 @@
       preservation of edges, welding redundant vertices & texture
       coordinate generation (spheremap and planar projections) + more.
 
- */
+*/
 
 #ifndef __StarTroupial__glm__
 #define __StarTroupial__glm__

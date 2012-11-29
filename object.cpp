@@ -29,6 +29,33 @@ void object::luminosity(float r, float g, float b) {
     glMaterialfv(GL_FRONT, GL_EMISSION, color);
 }
 
+void object::loadTexture(char *name) {
+    // First, read the tga file
+    if (LoadTGA(texture, name)) {
+        
+        std::cout << "Textura terminada: " << texture.height << " " << texture.width << std::endl;
+        
+        // Create the texture
+        glGenTextures(1, &(texture.texID));
+        glBindTexture(GL_TEXTURE_2D, texture.texID);
+        glTexImage2D(GL_TEXTURE_2D, 0, texture.bpp / 8, texture.width,
+                     texture.height, 0, texture.type, GL_UNSIGNED_BYTE, texture.imageData);
+        
+        // Set some parameters
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        
+        // Fre the image - already used
+        if (texture.imageData)
+            free(texture.imageData);
+        
+    // In case of failure, set texture to null
+    } else {
+        std::cout << "Error: No ha podido cargarse la textura \"" << name << "\".\n";
+        exit(0);
+    }
+}
+
 void object::update(float dx, float dy, float dz) {
     if (dead) return;
     

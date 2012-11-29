@@ -36,6 +36,10 @@ void display() {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     
+    // Enable textures
+    glEnable(GL_TEXTURE_2D);
+   // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    
     // Draw objects
     drawObjects();
     
@@ -99,6 +103,9 @@ void reshape(GLint w, GLint h) {
 
 void timer(int v) {
     // Check game over
+    if (!gameOver && checkGametime())
+        glutPostRedisplay();
+    
     gameOver = checkGametime();
     
     if (gameOver) {
