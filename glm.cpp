@@ -1575,6 +1575,8 @@ glmWriteOBJ(GLMmodel* model, char* filename, GLuint mode)
 GLvoid
 glmDraw(GLMmodel* model, GLuint mode)
 {
+    glDisable(GL_COLOR_MATERIAL);
+    
     static GLuint i;
     static GLMgroup* group;
     static GLMtriangle* triangle;
@@ -1673,6 +1675,8 @@ glmDraw(GLMmodel* model, GLuint mode)
         
         group = group->next;
     }
+    
+    glEnable(GL_COLOR_MATERIAL);
 }
 
 /* glmList: Generates and returns a display list for the model using

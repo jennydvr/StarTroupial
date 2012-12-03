@@ -17,6 +17,8 @@
 #include "star.h"
 #include "asteroid.h"
 #include "particle.h"
+#include "grassfloor.h"
+#include "skyroof.h"
 #include "explosionLight.h"
 
 using namespace std;
@@ -29,12 +31,16 @@ extern vector<bullet> bullets;
 extern vector<particle> particles;
 extern vector<light> lights;
 extern starship player;
-extern int score;
+extern grassfloor grass;
+extern skyroof sky;
 
+// Game values
+extern int score;
 extern int gametime;
 extern int initialGametime;
 extern int pausedTime;
 extern bool paused;
+extern bool infinite;
 
 void drawText(float pos[], char *text);
 void updateObjects();

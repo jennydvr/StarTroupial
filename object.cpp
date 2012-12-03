@@ -21,7 +21,7 @@ object::object(float a, float b, float c) : x(a), y(b), z(c) {
 }
 
 bool object::visible() {
-    return !dead && z <= 50;     // Camera bounds
+    return !dead && z <= 200;     // Camera bounds
 }
 
 void object::luminosity(float r, float g, float b) {
@@ -30,30 +30,26 @@ void object::luminosity(float r, float g, float b) {
 }
 
 void object::loadTexture(char *name) {
-    // First, read the tga file
-    if (LoadTGA(texture, name)) {
-        
-        std::cout << "Textura terminada: " << texture.height << " " << texture.width << std::endl;
-        
-        // Create the texture
-        glGenTextures(1, &(texture.texID));
-        glBindTexture(GL_TEXTURE_2D, texture.texID);
-        glTexImage2D(GL_TEXTURE_2D, 0, texture.bpp / 8, texture.width,
-                     texture.height, 0, texture.type, GL_UNSIGNED_BYTE, texture.imageData);
-        
-        // Set some parameters
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-        
-        // Fre the image - already used
-        if (texture.imageData)
-            free(texture.imageData);
-        
-    // In case of failure, set texture to null
-    } else {
+    
+    // In case of error, keep calm and keep going
+    if (!LoadTGA(texture, name)) {
         std::cout << "Error: No ha podido cargarse la textura \"" << name << "\".\n";
-        exit(0);
+        texture.created = false;
     }
+    
+    // Create the texture
+    glGenTextures(1, &(texture.texID));
+    glBindTexture(GL_TEXTURE_2D, texture.texID);
+    glTexImage2D(GL_TEXTURE_2D, 0, texture.bpp / 8, texture.width,
+                 texture.height, 0, texture.type, GL_UNSIGNED_BYTE, texture.imageData);
+        
+    // Set some parameters
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        
+    // Free the image - already used
+    if (texture.imageData)
+        free(texture.imageData);
 }
 
 void object::update(float dx, float dy, float dz) {

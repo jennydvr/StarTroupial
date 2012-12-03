@@ -19,7 +19,7 @@ clean: ; rm -f ./*.o ./*.gch playGame
 
 %.o: %.cpp ; $(CXX) $(CXXFLAGS) $(LDLIBS) -c $<
 
-playGame: main.o objectManager.o star.o asteroid.o ring.o starship.o bullet.o explosionLight.o particle.o interactiveObject.o object.o collisionManager.o  soundManager.o glm.o Texture.o; $(build-exec)
+playGame: main.o objectManager.o skyroof.o grassfloor.o star.o asteroid.o ring.o starship.o bullet.o explosionLight.o particle.o interactiveObject.o object.o collisionManager.o  soundManager.o glm.o Texture.o; $(build-exec)
 	
 main.o: main.cpp objectManager.h
 objectManager.o: objectManager.cpp objectManager.h
@@ -30,6 +30,8 @@ bullet.o: bullet.cpp bullet.h
 explosionLight.o: explosionLight.cpp explosionLight.h
 particle.o: particle.cpp particle.h
 star.o: star.cpp star.h
+grassfloor.o: grassfloor.cpp grassfloor.h
+skyroof.o: skyroof.cpp skyroof.h
 interactiveObject.o: interactiveObject.cpp interactiveObject.h
 object.o: object.cpp object.h
 collisionManager.o: collisionManager.cpp collisionManager.h

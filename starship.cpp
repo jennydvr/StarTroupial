@@ -8,7 +8,7 @@
 
 #include "starship.h"
 
-starship::starship() : interactiveObject(0, 0, 40) {
+starship::starship() : interactiveObject(0, 0, 190) {
     box = boundingBox(x, y, z, 1, true);
     previousInv = -2000;        // Not invulnerable at the beginning
     previousShooting = previousText = score = 0;
@@ -47,28 +47,60 @@ void starship::action(int factor) {
 }
 
 void starship::changeVelocity(int dx, int dy) {
-    if ( (-11 < 0.1 * dx + x && 0.1 * dx + x < 11)  // Ship between bounds
-      || (-11 >= 0.1 * dx + x && dx == 1)           // Ship stuck on left - but you're moving it right
-      || (0.1 * dx + x >= 11 && dx == -1))          // Ship stuck on right - but you're moving it left
-        velocity[0] = 0.1 * dx;
-    else
-        velocity[0] = 0;
-    
-    if ( (-7 < 0.1 * dy + y && 0.1 * dy + y < 7)     // Ship between bounds
-        || (-7 >= 0.1 * dy + x && dy == 1)           // Ship stuck on left - but you're moving it right
-        || (0.1 * dy + y >= 7 && dy == -1))          // Ship stuck on right - but you're moving it left
-        velocity[1] = 0.1 * dy;
-    else
-        velocity[1] = 0;
+    velocity[0] = 0.1 * dx;
+    velocity[1] = 0.1 * dy;
 }
 
 void starship::update(float dx, float dy, float dz) {
     object::update(velocity[0], velocity[1]);
+    
+    // Check horizontal bounds
+    int cx = 0, cy = 0;
+    
+    if (x < -11.5) {
+        x = -11.5;
+        cx = 1;
+    } else if (x > 11.5) {
+        x = 11.5;
+        cx = 1;
+    }
+    
+    // Check vertical bounds
+    if (y < -8.5) {
+        y = -8.5;
+        cy = 1;
+    } else if (y > 8.5) {
+        y = 8.5;
+        cy = 1;
+    }
+    
+    // Update box in case of bound violation
+    box.update(-velocity[0] * cx, -velocity[1] * cy, 0);
+}
+
+void starship::brightness(float r, float g, float b) {
+    // For more about this numbers, check documentation
+    GLfloat color[] = {r, g, b, 1};
+    GLfloat emission[] = {0.1, 0.1, 0.1, 1};
+    GLfloat specular[] = {0.774597, 0.774597, 0.774597, 1};
+    GLfloat shininess = 76.8;
+    
+    // If the shininess is desired to be turned off, set everything to 0
+    if (r + g + b == 0) {
+        color[0] = color[1] = color[2] = 0;
+        emission[0] = emission[1] = emission[2] = 0;
+        specular[0] = specular[1] = specular[2] = 0;
+        shininess = 0;
+    }
+    
+    // Set specular, shininess and the internal light
+    glColor3f(color[0], color[1], color[2]);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
 }
 
 void starship::drawModel(bool withoutTexture) {
-    glDisable(GL_COLOR_MATERIAL);
-    
     // Lazy texture creation - only when neccessary
     if (!texture.created) {
         char name[32] = "resources/s_1024_C.tga";
@@ -89,16 +121,20 @@ void starship::drawModel(bool withoutTexture) {
     }
     
     // If the texture doesn't exists or draw without texture
-    if (!texture.created || withoutTexture)
+    if (!texture.created || withoutTexture) {
+        brightness(0.75, 0, 0);
         glmDraw(model, GLM_SMOOTH);
         
     // If texture exists and draw with texture
-    else {
+    } else {
+        brightness(0.6, 0.6, 0.4);
+        glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, texture.texID);
-        glmDraw(model, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
+        glmDraw(model, GLM_SMOOTH | GLM_TEXTURE);
+        glDisable(GL_TEXTURE_2D);
     }
     
-    glEnable(GL_COLOR_MATERIAL);
+    brightness();
 }
 
 void starship::draw(GLenum mode, int ident) {
@@ -110,17 +146,15 @@ void starship::draw(GLenum mode, int ident) {
     
     glPushMatrix();
         glTranslatef(x, y, z);
-    
-        glColor3f(1, 0, 0);
         drawModel(glutGet(GLUT_ELAPSED_TIME) - previousInv < 2000 && !texturize);
-        glColor3f(0, 0, 0);
     glPopMatrix();
     
     object::draw();
 }
 
 void starship::reset() {
-    x = y = 0;
+    x = y = velocity[0] = velocity[1] = 0;
     box = boundingBox(x, y, z, 1, true);
     previousInv = previousShooting = score = 0;
+    texturize = true;
 }

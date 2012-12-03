@@ -16,18 +16,17 @@ GLubyte cTGAcompare[12] = {0,0,10,0,0,0,0,0,0,0,0,0};	// Compressed TGA Header
 
 bool LoadTGA(Texture &texture, char * filename)				// Load a TGA file
 {
-	FILE * fTGA;												// File pointer to texture file
-	fTGA = fopen(filename, "rb");								// Open file for reading
+	FILE * fTGA = fopen(filename, "rb");								// Open file for reading
 
 	if(fTGA == NULL)											// If it didn't open....
 	{
-        std::cout << "Error: No se ha podido abrir el archivo.\n";          // Display an error message
+        //std::cout << "Error: No se ha podido abrir el archivo.\n";          // Display an error message
 		return false;														// Exit function
 	}
 
 	if(fread(&tgaheader, sizeof(TGAHeader), 1, fTGA) == 0)					// Attempt to read 12 byte header from file
 	{
-        std::cout << "Error: No se ha leer el encabezado del archivo.\n";   // If it fails, display an error message 
+        //std::cout << "Error: No se puede leer el encabezado del archivo.\n";   // If it fails, display an error message 
 		if(fTGA != NULL)													// Check to seeiffile is still open
 		{
 			fclose(fTGA);													// If it is, close it
@@ -45,7 +44,7 @@ bool LoadTGA(Texture &texture, char * filename)				// Load a TGA file
 	}
 	else																	// If header matches neither type
 	{
-		//MessageBox(NULL, "TGA file be type 2 or type 10 ", "Invalid Image", MB_OK);	// Display an error
+        //std::cout << "Error: Imagen invalida, el archivo debe ser de tipo 2 o tipo 10.\n"; // Display an error
 		fclose(fTGA);
 		return false;																// Exit function
 	}
@@ -57,8 +56,8 @@ bool LoadTGA(Texture &texture, char * filename)				// Load a TGA file
 bool LoadUncompressedTGA(Texture &texture, char * filename, FILE * fTGA)	// Load an uncompressed TGA (note, much of this code is based on NeHe's
 {																			// TGA Loading code nehe.gamedev.net)
 	if(fread(tga.header, sizeof(tga.header), 1, fTGA) == 0)					// Read TGA header
-	{										
-		//MessageBox(NULL, "Could not read info header", "ERROR", MB_OK);		// Display error
+	{
+        //std::cout << "Error: No se puede leer el encabezado.\n";            // Display error
 		if(fTGA != NULL)													// if file is still open
 		{
 			fclose(fTGA);													// Close it
@@ -75,7 +74,7 @@ bool LoadUncompressedTGA(Texture &texture, char * filename, FILE * fTGA)	// Load
 
 	if((texture.width <= 0) || (texture.height <= 0) || ((texture.bpp != 24) && (texture.bpp !=32)))	// Make sure all information is valid
 	{
-		//MessageBox(NULL, "Invalid texture information", "ERROR", MB_OK);	// Display Error
+        //std::cout << "Error: Informacion de la textura invalida.\n";        // Display Error
 		if(fTGA != NULL)													// Check if file is still open
 		{
 			fclose(fTGA);													// If so, close it
@@ -94,14 +93,14 @@ bool LoadUncompressedTGA(Texture &texture, char * filename, FILE * fTGA)	// Load
 
 	if(texture.imageData == NULL)											// If no space was allocated
 	{
-		//MessageBox(NULL, "Could not allocate memory for image", "ERROR", MB_OK);	// Display Error
+        //std::cout << "Error: No se puede reservar memoria para la imagen.\n"; // Display Error
 		fclose(fTGA);														// Close the file
 		return false;														// Return failed
 	}
 
 	if(fread(texture.imageData, 1, tga.imageSize, fTGA) != tga.imageSize)	// Attempt to read image data
 	{
-		//MessageBox(NULL, "Could not read image data", "ERROR", MB_OK);		// Display Error
+        //std::cout << "Error: No se pueden leer los datos de la imagen.\n";  // Display Error
 		if(texture.imageData != NULL)										// If imagedata has data in it
 		{
 			free(texture.imageData);										// Delete data from memory
@@ -125,7 +124,7 @@ bool LoadCompressedTGA(Texture &texture, char * filename, FILE * fTGA)		// Load 
 { 
 	if(fread(tga.header, sizeof(tga.header), 1, fTGA) == 0)					// Attempt to read header
 	{
-		//MessageBox(NULL, "Could not read info header", "ERROR", MB_OK);		// Display Error
+        //std::cout << "Error: No se ha podido leer el encabezado.\n";        // Display Error
 		if(fTGA != NULL)													// If file is open
 		{
 			fclose(fTGA);													// Close it
@@ -142,7 +141,7 @@ bool LoadCompressedTGA(Texture &texture, char * filename, FILE * fTGA)		// Load 
 
 	if((texture.width <= 0) || (texture.height <= 0) || ((texture.bpp != 24) && (texture.bpp !=32)))	//Make sure all texture info is ok
 	{
-		//MessageBox(NULL, "Invalid texture information", "ERROR", MB_OK);	// If it isnt...Display error
+        //std::cout << "Error: Informacion de textura invalida.\n";           // If it isnt...Display error
 		if(fTGA != NULL)													// Check if file is open
 		{
 			fclose(fTGA);													// Ifit is, close it
@@ -161,7 +160,7 @@ bool LoadCompressedTGA(Texture &texture, char * filename, FILE * fTGA)		// Load 
 
 	if(texture.imageData == NULL)											// If it wasnt allocated correctly..
 	{
-		//MessageBox(NULL, "Could not allocate memory for image", "ERROR", MB_OK);	// Display Error
+        //std::cout << "Error: No se ha podido reservar memoria para la imagen.\n"; // Display Error
 		fclose(fTGA);														// Close file
 		return false;														// Return failed
 	}
@@ -177,7 +176,7 @@ bool LoadCompressedTGA(Texture &texture, char * filename, FILE * fTGA)		// Load 
 
 		if(fread(&chunkheader, sizeof(GLubyte), 1, fTGA) == 0)				// Read in the 1 byte header
 		{
-			//MessageBox(NULL, "Could not read RLE header", "ERROR", MB_OK);	// Display Error
+            //std::cout << "Error: No se ha podido leer el encabezado RLE.\n"; // Display Error
 			if(fTGA != NULL)												// If file is open
 			{
 				fclose(fTGA);												// Close file
@@ -196,7 +195,7 @@ bool LoadCompressedTGA(Texture &texture, char * filename, FILE * fTGA)		// Load 
 			{
 				if(fread(colorbuffer, 1, tga.bytesPerPixel, fTGA) != tga.bytesPerPixel) // Try to read 1 pixel
 				{
-					//MessageBox(NULL, "Could not read image data", "ERROR", MB_OK);		// IF we cant, display an error
+                    //std::cout << "Error: No se puede leer los datos de la imagen.\n"; // IF we cant, display an error
 
 					if(fTGA != NULL)													// See if file is open
 					{
@@ -230,7 +229,7 @@ bool LoadCompressedTGA(Texture &texture, char * filename, FILE * fTGA)		// Load 
 
 				if(currentpixel > pixelcount)											// Make sure we havent read too many pixels
 				{
-					//MessageBox(NULL, "Too many pixels read", "ERROR", NULL);			// if there is too many... Display an error!
+                    //std::cout << "Error: Demasiados pixeles leidos.\n";                 // if there is too many... Display an error!
 
 					if(fTGA != NULL)													// If there is a file open
 					{
@@ -255,8 +254,8 @@ bool LoadCompressedTGA(Texture &texture, char * filename, FILE * fTGA)		// Load 
 		{
 			chunkheader -= 127;															// Subteact 127 to get rid of the ID bit
 			if(fread(colorbuffer, 1, tga.bytesPerPixel, fTGA) != tga.bytesPerPixel)		// Attempt to read following color values
-			{	
-				//MessageBox(NULL, "Could not read from file", "ERROR", MB_OK);			// If attempt fails.. Display error (again)
+			{
+                //std::cout << "Error: No se ha podido leer el archivo.\n";               // If attempt fails.. Display error (again)
 
 				if(fTGA != NULL)														// If thereis a file open
 				{
@@ -292,7 +291,7 @@ bool LoadCompressedTGA(Texture &texture, char * filename, FILE * fTGA)		// Load 
 
 				if(currentpixel > pixelcount)											// Make sure we havent written too many pixels
 				{
-					//MessageBox(NULL, "Too many pixels read", "ERROR", NULL);			// if there is too many... Display an error!
+                    //std::cout << "Error: Demasiados pixeles leidos.\n";                 // if there is too many... Display an error!
 
 					if(fTGA != NULL)													// If there is a file open
 					{

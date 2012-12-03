@@ -19,12 +19,16 @@ class starship : public interactiveObject {
     // Time for shooting
     int currentShooting, previousShooting;
     
-    // Draw the model
-    void drawModel(bool withoutTexture = true);
-    
     // Invulnerability
     int currentInv, previousInv, previousText;
     bool texturize;
+    
+    // Draw the model
+    void drawModel(bool withoutTexture = true);
+    
+    
+    // Sets material properties
+    void brightness(float r = 0, float g = 0, float b = 0);
     
 public:
     

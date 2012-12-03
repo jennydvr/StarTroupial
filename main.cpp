@@ -18,6 +18,7 @@ int vx = 0, vy = 0;
 
 // Draws a text on screen
 void drawText(float pos[], char *text) {
+    glDisable(GL_LIGHTING);
 	glPushMatrix();
     
         // The font is too big, so it needs to be resized
@@ -29,16 +30,13 @@ void drawText(float pos[], char *text) {
             glutStrokeCharacter(GLUT_STROKE_ROMAN, *c);
     
 	glPopMatrix();
+    glEnable(GL_LIGHTING);
 }
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    
-    // Enable textures
-    glEnable(GL_TEXTURE_2D);
-   // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     
     // Draw objects
     drawObjects();
@@ -50,16 +48,18 @@ void display() {
     sprintf(integerString, "%d", score);
     strcat(title, integerString);
     
-    float pos0[] = {-2800, -2350, 100};
+    float pos0[] = {2200, 2250, 7500};
     drawText(pos0, title);
     
     // Draw time
-    sprintf(integerString, "%d", gametime);
-    sprintf(title, "Time: ");
-    strcat(title, integerString);
+    if (!infinite) {
+        sprintf(integerString, "%d", gametime);
+        sprintf(title, "Time: ");
+        strcat(title, integerString);
     
-    float pos1[] = {2200, 2250, 100};
-    drawText(pos1, title);
+        float pos1[] = {2200, 2050, 7500};
+        drawText(pos1, title);
+    }
     
     // Draw fps
     if (debug || fps != 60) {
@@ -67,19 +67,19 @@ void display() {
         sprintf(title, "FPS: ");
         strcat(title, integerString);
         
-        float pos2[] = {-2800, 2250, 100};
+        float pos2[] = {-2800, 2250, 7500};
         drawText(pos2, title);
     }
     
     // Game over
     if (gameOver) {
         sprintf(title, "GAME OVER");
-        float pos3[] = {-2800, 2250, 100};
+        float pos3[] = {-2800, 2250, 7500};
         drawText(pos3, title);
         
         
         sprintf(title, "Play again = r  Quit = q");
-        float pos4[] = {-2800, 2050, 100};
+        float pos4[] = {-2800, 2050, 7500};
         drawText(pos4, title);
     }
     
@@ -93,12 +93,12 @@ void reshape(GLint w, GLint h) {
     
     // Set perspective view
     glLoadIdentity();
-    gluPerspective(90, GLfloat(w) / GLfloat(h), 1, 50);
+    gluPerspective(90, GLfloat(w) / GLfloat(h), 1, 200);
     
     // Set the camera
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0, 50, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 200, 0, 0, 0, 0, 1, 0);
 }
 
 void timer(int v) {
@@ -120,34 +120,48 @@ void timer(int v) {
         updateObjects();
         addObjects();
         checkGametime();
+        glutPostRedisplay();
     }
     
-    // Draw the current frame
-    glutPostRedisplay();
     glutTimerFunc(1000 / fps, timer, 0);
 }
 
 void init() {
     srand((unsigned int)time(NULL));
     
+    // Set up directional light
     GLfloat black[] = {0.1, 0.1, 0.1, 1};
     GLfloat white[] = {1, 1, 1, 1};
-    GLfloat direction[] = {0, 25, 50, 0};
+    GLfloat direction[] = {-100, 100, 100, 0};
     
     glLightfv(GL_LIGHT0, GL_AMBIENT, black);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
     glLightfv(GL_LIGHT0, GL_SPECULAR, white);
     glLightfv(GL_LIGHT0, GL_POSITION, direction);
     
+    // Set up fog
+    GLfloat density = 0.35f;
+    GLfloat grey[4] = {0.75, 0.75, 0.75, 1.0};
+    
+    glFogi(GL_FOG_MODE, GL_LINEAR);      // set the fog mode to GL_EXP2
+    glFogfv(GL_FOG_COLOR, grey);         // set the fog color to our color chosen above
+    glFogf(GL_FOG_DENSITY, density);     // set the density to the value above
+    glHint(GL_FOG_HINT, GL_FASTEST);     // set the fog to look the nicest, may slow down on older cards
+    glFogf(GL_FOG_START, 150.0f);        // start distance - from the camera
+    glFogf(GL_FOG_END, 200.0f);          // end distance - from the camera
+    
+    // Turn everything on
     glEnable(GL_LIGHTING);          // so the renderer considers light
     glEnable(GL_LIGHT0);            // turn LIGHT0 on
     glEnable(GL_DEPTH_TEST);        // so the renderer considers depth
     glEnable(GL_COLOR_MATERIAL);    // enable color tracking
-    glEnable(GL_BLEND);
+    glEnable(GL_BLEND);             // turn on transparency
+    glEnable(GL_FOG);               // turn on fog
     
     glShadeModel(GL_SMOOTH);                            // Gourad shading
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);  // define what will be changed with glColor
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -160,7 +174,7 @@ void keyboard(unsigned char key, int x, int y) {
                 exit(0);
                 break;
         }
-        
+
         return;
     }
     
@@ -174,12 +188,20 @@ void keyboard(unsigned char key, int x, int y) {
                 initialGametime += glutGet(GLUT_ELAPSED_TIME) - pausedTime;
             break;
         case '+':
-            fps *= (fps != 60) ? 2 : 1;
+            fps *= 2;
+            fps = fps > 60 ? 60: fps;
             break;
         case '-':
-            fps /= (fps > 0.05) ? 2 : 1;
+            fps /= 2;
+            fps = fps < 1 ? 1: fps;
             break;
         case 'o': case 'O':
+            infinite = !infinite;
+            
+            if (!infinite)
+                initialGametime = glutGet(GLUT_ELAPSED_TIME);
+            break;
+        case 'l':
             debug = !debug;
             break;
     }
@@ -204,6 +226,11 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 void keyUp(unsigned char key, int x, int y) {
+    if (paused || gameOver) {
+        vx = vy = 0;
+        return;
+    }
+    
     // Stop movement
     if (key == 'w' || key == 'W')       // Up -> +y
         vy = 0;
@@ -246,6 +273,9 @@ void processHits(GLint hits, GLuint buffer[]) {
 }
 
 void pick(int button, int state, int x, int y) {
+    if (paused || gameOver)
+        return;
+    
 	GLuint selectBuf[BUFSIZE];
 	GLint hits, viewport[4];
     
@@ -270,7 +300,7 @@ void pick(int button, int state, int x, int y) {
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
             glLoadIdentity ();
-            gluLookAt(0, 0, 50, 0, 0, 0, 0, 1, 0);
+            gluLookAt(0, 0, 200, 0, 0, 0, 0, 1, 0);
     
             drawObjects(GL_SELECT);
         glPopMatrix();

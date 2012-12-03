@@ -26,13 +26,18 @@ light::light(float a, float b, float c) : object(a, b, c) {
     glLightfv(LIGHTS[n], GL_SPECULAR, white);
     glLightfv(LIGHTS[n], GL_POSITION, position);
     
+    // Set up attenuation
+    glLightf(LIGHTS[n], GL_CONSTANT_ATTENUATION, 1.0f);
+    glLightf(LIGHTS[n], GL_LINEAR_ATTENUATION, 0.1f);
+    glLightf(LIGHTS[n], GL_QUADRATIC_ATTENUATION, 0.05f);
+    
     glEnable(LIGHTS[n]);
     initialTime = glutGet(GLUT_ELAPSED_TIME);
 }
 
 void light::update(float dx, float dy, float dz) {
     // Check time
-    if (glutGet(GLUT_ELAPSED_TIME) - initialTime < 500)
+    if (glutGet(GLUT_ELAPSED_TIME) - initialTime < 1000)
         return;
     
     // Kill the light

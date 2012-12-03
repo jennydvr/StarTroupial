@@ -15,6 +15,8 @@ vector<particle> particles;
 vector<bullet> bullets;
 vector<light> lights;
 starship player;
+grassfloor grass;
+skyroof sky;
 
 int gametime = 60;
 int score = 0;
@@ -29,6 +31,8 @@ int asteroidsRate = 3000;
 
 int initialGametime = 0;
 int pausedTime = 0;
+
+bool infinite = false;
 
 bool notVisible(object object) {
     return !object.visible();
@@ -94,7 +98,7 @@ void removeObjects(vector<T> &v) {
 }
 
 bool checkGametime() {
-    if (!paused) {
+    if (!paused || !infinite) {
         int t = (glutGet(GLUT_ELAPSED_TIME) - initialGametime) / 1000;
         gametime = gametime <= 0 ? 0 : 60 - t;
     }
@@ -108,82 +112,44 @@ void addRings() {
     if (currentTime - ringsPrevTime < ringsRate)
         return;
     
-    int x, y;
+    int x, y, dx, dy;
     
     switch (rand() % 10) {
-        case 0:           // Cross
+        case 0:             // Cross
             rings.push_back(ring(0, 2));
             rings.push_back(ring(0, -2));
             rings.push_back(ring(-2.5, 0));
             rings.push_back(ring(2.5, 0));
             break;
             
-        case 1:     // Tunnel
-            x = (float)rand() / ((float)RAND_MAX / 8) - 4;
-            y = (float)rand() / ((float)RAND_MAX / 8) - 4;
-            
-            rings.push_back(ring(x, y, 0));
-            rings.push_back(ring(x, y, -5));
-            rings.push_back(ring(x, y, -10));
-            rings.push_back(ring(x, y, -15));
-            rings.push_back(ring(x, y, -20));
-            break;
-            
-        case 2:     // Triforce
+        case 1:             // Triforce
             rings.push_back(ring(0, 1.75));
             rings.push_back(ring(2, -1.75));
             rings.push_back(ring(-2, -1.75));
             break;
             
-        case 3:     // 4 things on side
+        case 2:             // 4 things on side
             rings.push_back(ring(5, 1));
             rings.push_back(ring(2.75, -1));
             rings.push_back(ring(-5, 1));
             rings.push_back(ring(-2.75, -1));
             break;
 	    
-        case 4:     // Tunnel Diagonal I Cuadrante
+        case 3: case 4:     // Tunnels
             x = (float)rand() / ((float)RAND_MAX / 8) - 4;
             y = (float)rand() / ((float)RAND_MAX / 8) - 4;
             
+            dx = rand() % 2 - 1;
+            dy = rand() % 2 - 1;
+            
             rings.push_back(ring(x, y, 0));
-            rings.push_back(ring(x+1, y+1, -5));
-            rings.push_back(ring(x+2, y+2, -7));
-            rings.push_back(ring(x+3, y+3, -9));
-            rings.push_back(ring(x+4, y+4, -11));
+            rings.push_back(ring(x + 0.5f * dx, y + 0.5f * dy, -2));
+            rings.push_back(ring(x + 1.0f * dx, y + 1.0f * dy, -4));
+            rings.push_back(ring(x + 1.5f * dx, y + 1.5f * dy, -6));
+            rings.push_back(ring(x + 2.0f * dx, y + 2.0f * dy, -8));
             break;
-        case 5:     // Tunnel Diagonal II Cuadrante
-            x = (float)rand() / ((float)RAND_MAX / 8) - 4;
-            y = (float)rand() / ((float)RAND_MAX / 8) - 4;
-            
-            rings.push_back(ring(x, y, 0));
-            rings.push_back(ring(x-1, y+1, -5));
-            rings.push_back(ring(x-2, y+2, -7));
-            rings.push_back(ring(x-3, y+3, -9));
-            rings.push_back(ring(x-4, y+4, -11));
-            break;
-        case 6:     // Tunnel Diagonal III Cuadrante
-            x = (float)rand() / ((float)RAND_MAX / 8) - 4;
-            y = (float)rand() / ((float)RAND_MAX / 8) - 4;
-            
-            rings.push_back(ring(x, y, 0));
-            rings.push_back(ring(x-1, y-1, -5));
-            rings.push_back(ring(x-2, y-2, -7));
-            rings.push_back(ring(x-3, y-3, -9));
-            rings.push_back(ring(x-4, y-4, -11));
-            break;
-        case 7:     // Tunnel Diagonal IV Cuadrante
-            x = (float)rand() / ((float)RAND_MAX / 8) - 4;
-            y = (float)rand() / ((float)RAND_MAX / 8) - 4;
-            
-            rings.push_back(ring(x, y, 0));
-            rings.push_back(ring(x+1, y-1, -5));
-            rings.push_back(ring(x+2, y-2, -7));
-            rings.push_back(ring(x+3, y-3, -9));
-            rings.push_back(ring(x+4, y-4, -11));
-            break;	    
 	    
-        default:     // 1 ring
+        default:            // 1 ring
             rings.push_back(ring());
             break;
     }
@@ -200,20 +166,20 @@ void addAsteroids() {
         return;
     
     switch (rand() % 6) {
-        case 0:           // Line
+        case 0:         // Line
             asteroids.push_back(asteroid(-6, 0));
             asteroids.push_back(asteroid(-2, 0));
             asteroids.push_back(asteroid(2, 0));
             asteroids.push_back(asteroid(6, 0));
             break;
             
-        case 1:     // Triforce
+        case 1:         // Triforce
             asteroids.push_back(asteroid(0, 2));
             asteroids.push_back(asteroid(2.5, -2));
             asteroids.push_back(asteroid(-2.5, -2));
             break;
             
-        case 2:     // V-shaped
+        case 2:         // V-shaped
             asteroids.push_back(asteroid(6, 2.5));
             asteroids.push_back(asteroid(3, 0));
             asteroids.push_back(asteroid(0, -2.5));
@@ -221,7 +187,7 @@ void addAsteroids() {
             asteroids.push_back(asteroid(-6, 2.5));
             break;
             
-        case 3:     // X-shaped
+        case 3:         // X-shaped
             asteroids.push_back(asteroid(6, 6));
             asteroids.push_back(asteroid(3, 3));
             asteroids.push_back(asteroid(6, -6));
@@ -233,7 +199,7 @@ void addAsteroids() {
             asteroids.push_back(asteroid(-6, -6));
             break;
             
-        default:     // 1 ring
+        default:        // 1 ring
             asteroids.push_back(asteroid());
             break;
     }
@@ -267,7 +233,7 @@ void updateObjects() {
 
 void addObjects() {
     // Add stars
-    if (rand() % 100 + 1 > 80)
+    if (rand() % 100 > 80)
         stars.push_back(star());
     
     // Add rings
@@ -280,6 +246,12 @@ void addObjects() {
 void drawObjects(GLenum mode) {
     // Draw player
     player.draw();
+    
+    // Draw grass
+    grass.draw();
+    
+    // Draw sky
+    sky.draw();
     
     // Draw stars
     for_each(stars.begin(), stars.end(), draw<star>);

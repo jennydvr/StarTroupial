@@ -8,7 +8,7 @@
 
 #include "bullet.h"
 
-bullet::bullet(float a, float b, float ta, float tb, float tc, bool kill) : interactiveObject(a, b, 35) {
+bullet::bullet(float a, float b, float ta, float tb, float tc, bool kill) : interactiveObject(a, b, 185) {
     // Empty bullet
     if (kill) {
         z = -1;
@@ -17,7 +17,7 @@ bullet::bullet(float a, float b, float ta, float tb, float tc, bool kill) : inte
     }
     
     // Initialize target and initial point
-    xi = a; yi = b; zi = 35;
+    xi = a; yi = b; zi = 185;
     xf = ta; yf = tb; zf = tc;
     
     init();
@@ -26,13 +26,18 @@ bullet::bullet(float a, float b, float ta, float tb, float tc, bool kill) : inte
 void bullet::init() {
     box = boundingBox(x, y, z, 0.25f);
     
-    GLfloat red[] = {1, 0, 0, 1};
-    GLfloat position[] = {x, y, z, 1};
+    GLfloat red[] = {0.25f, 0, 0, 1};
+    GLfloat position[] = {x, y, z, 0};
     
     // Set up light
     glLightfv(GL_LIGHT1, GL_AMBIENT, red);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, red);
     glLightfv(GL_LIGHT1, GL_POSITION, position);
+    
+    // Set up attenuation
+    glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.25f);
+    glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.2f);
+    glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.05f);
     
     glEnable(GL_LIGHT1);
 }
@@ -48,7 +53,7 @@ void bullet::update(float dx, float dy, float dz) {
     max += (y - yi) * (y - yi);
     max += (z - zi) * (z - zi);
     
-    dead |= max >= 200;
+    dead |= max >= 1000;
     
     object::update(BULLET_SPEED * (xf - xi), BULLET_SPEED * (yf - yi), BULLET_SPEED * (zf - zi));
     

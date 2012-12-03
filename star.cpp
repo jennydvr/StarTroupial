@@ -8,7 +8,7 @@
 
 #include "star.h"
 
-star::star() : object(10, -10) {}
+star::star() : object(15, -11) {}
 
 void star::update(float dx, float dy, float dz) {
     object::update(0, 0, SPEED);
@@ -17,10 +17,8 @@ void star::update(float dx, float dy, float dz) {
 void star::draw(GLenum mode, int ident) {
     glPushMatrix();
         glTranslatef(x, y, z);
-    
-        // Scale the radius so the star is always a single dot
         luminosity(1, 1, 1);
-        glutSolidSphere((0.5 - z / 100) * 0.3, 16, 16);
+        glutSolidSphere(z * 0.05 / 190 + (190 - z) * 0.0015625, 16, 16);
         luminosity();
     glPopMatrix();
 }
