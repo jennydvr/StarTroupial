@@ -16,9 +16,9 @@ bool collision(boundingBox a, boundingBox b) {
     std::vector<float> amax = a.getMax();
     std::vector<float> bmax = b.getMax();
     
-    return amax[0] >= bmin[0] & bmax[0] >= amin[0]
-         & amax[1] >= bmin[1] & bmax[1] >= amin[1]
-         & amax[2] >= bmin[2] & bmax[2] >= amin[2];
+    return amax[0] >= bmin[0] && bmax[0] >= amin[0]
+        && amax[1] >= bmin[1] && bmax[1] >= amin[1]
+        && amax[2] >= bmin[2] && bmax[2] >= amin[2];
 }
 
 boundingBox::boundingBox(): xmin(0), ymin(0), zmin(0), xmax(0), ymax(0), zmax(0) {}
@@ -46,6 +46,18 @@ boundingBox::boundingBox(float xi, float yi, float zi, float radius, bool isShip
         ymin *= 0.65f;
         ymax *= 0.65f;
     }
+}
+
+boundingBox::boundingBox(float xi, float yi, float zi, float width, float height, float depth) {
+    xmin = -width / 2;
+    ymin = -height / 2;
+    zmin = -depth / 2;
+    
+    xmax = -xmin;
+    ymax = -ymin;
+    zmax = -zmin;
+    
+    update(xi, yi, zi);
 }
 
 std::vector<float> boundingBox::getMin() {

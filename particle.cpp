@@ -8,6 +8,8 @@
 
 #include "particle.h"
 
+using namespace std;
+
 particle::particle(float a, float b, float c, float direction[]) : object(a, b, c) {
     ini[0] = a;
     ini[1] = b;
@@ -34,7 +36,7 @@ void particle::update(float dx, float dy, float dz) {
     dead = max >= 400;
 }
 
-void particle::draw(GLenum mode, int ident) {
+void particle::draw(GLenum mode, int ident, vector<float> shadowPlane) {
     if (dead) return;
     
     col[0] = (float)rand()/(float)RAND_MAX;

@@ -19,13 +19,13 @@ extern bool debug;
 // Class for collision checking - Bounding Box Method
 class boundingBox {
     
+public:
+    
     // Minimum box point
     float xmin, ymin, zmin;
     
     // Maximum box point
     float xmax, ymax, zmax;
-    
-public:
     
     // Empty constructor
     boundingBox();
@@ -35,6 +35,9 @@ public:
     
     // Constructor for sphere
     boundingBox(float xi, float yi, float zi, float radius, bool isShip = false);
+    
+    // Constructor for box
+    boundingBox(float xi, float yi, float zi, float width, float height, float depth);
     
     // Gets minimum point
     std::vector<float> getMin();

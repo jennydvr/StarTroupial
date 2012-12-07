@@ -19,6 +19,8 @@ int vx = 0, vy = 0;
 // Draws a text on screen
 void drawText(float pos[], char *text) {
     glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    glColor3f(1, 1, 1);
 	glPushMatrix();
     
         // The font is too big, so it needs to be resized
@@ -30,6 +32,7 @@ void drawText(float pos[], char *text) {
             glutStrokeCharacter(GLUT_STROKE_ROMAN, *c);
     
 	glPopMatrix();
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
 }
 
@@ -38,8 +41,8 @@ void display() {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     
-    // Draw objects
     drawObjects();
+    drawShadows();
     
     // Draw score
     char integerString[32];
@@ -117,8 +120,8 @@ void timer(int v) {
     
     // Animate the world
     if (!paused) {
-        updateObjects();
         addObjects();
+        updateObjects();
         checkGametime();
         glutPostRedisplay();
     }
@@ -132,7 +135,7 @@ void init() {
     // Set up directional light
     GLfloat black[] = {0.1, 0.1, 0.1, 1};
     GLfloat white[] = {1, 1, 1, 1};
-    GLfloat direction[] = {-100, 100, 100, 0};
+    GLfloat direction[] = {-200, 200, 200, 0};
     
     glLightfv(GL_LIGHT0, GL_AMBIENT, black);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
@@ -143,7 +146,7 @@ void init() {
     GLfloat density = 0.35f;
     GLfloat grey[4] = {0.75, 0.75, 0.75, 1.0};
     
-    glFogi(GL_FOG_MODE, GL_LINEAR);      // set the fog mode to GL_EXP2
+    glFogi(GL_FOG_MODE, GL_LINEAR);      // set the fog mode to GL_LINEAR
     glFogfv(GL_FOG_COLOR, grey);         // set the fog color to our color chosen above
     glFogf(GL_FOG_DENSITY, density);     // set the density to the value above
     glHint(GL_FOG_HINT, GL_FASTEST);     // set the fog to look the nicest, may slow down on older cards
@@ -160,8 +163,7 @@ void init() {
     
     glShadeModel(GL_SMOOTH);                            // Gourad shading
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);  // define what will be changed with glColor
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -254,7 +256,8 @@ void processHits(GLint hits, GLuint buffer[]) {
 	GLuint numNames;
     
     if (hits == 0) {      // No intersections with asteroids
-        bullets.push_back(player.shoot(-1, -1, -1));
+        if (player.canShoot())
+            bullets.push_back(player.shoot(-1, -1, -1));
         return;
     }
     
@@ -269,15 +272,26 @@ void processHits(GLint hits, GLuint buffer[]) {
 		j = (j + 4) + (numNames - 1);
 	}
     
-    bullets.push_back(player.shoot(asteroids[ident].x, asteroids[ident].y, asteroids[ident].z));
+    if (player.canShoot())
+        bullets.push_back(player.shoot(asteroids[ident].x, asteroids[ident].y, asteroids[ident].z));
 }
 
 void pick(int button, int state, int x, int y) {
     if (paused || gameOver)
         return;
     
+    // Delay on shooting
+    if (glutGet(GLUT_ELAPSED_TIME) < 5000)
+        return;
+    
+    // Delay between shoots
+    if (glutGet(GLUT_ELAPSED_TIME) - prevShooting < 700)
+        return;
+    
+    prevShooting = glutGet(GLUT_ELAPSED_TIME);
+    
 	GLuint selectBuf[BUFSIZE];
-	GLint hits, viewport[4];
+	GLint hits = 0, viewport[4];
     
 	if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
 		return;
@@ -322,13 +336,6 @@ int main(int argc, char** argv) {
     glutInitWindowSize(1024, 768);
     glutCreateWindow("StarTroupial");
     
-    glutReshapeFunc(reshape);
-    glutDisplayFunc(display);
-    glutKeyboardFunc(keyboard);
-    glutKeyboardUpFunc(keyUp);
-	glutMouseFunc(pick);
-    glutTimerFunc(1000 / fps, timer, 0);
-    
     // Initialize visual stuff
     init();
     
@@ -336,6 +343,16 @@ int main(int argc, char** argv) {
 #ifdef USE_SOUNDS
     initSounds();
 #endif
+    
+    // Initialize textures
+    initTextures();
+    
+    glutTimerFunc(1000 / fps, timer, 0);
+    glutReshapeFunc(reshape);
+    glutDisplayFunc(display);
+    glutKeyboardFunc(keyboard);
+    glutKeyboardUpFunc(keyUp);
+	glutMouseFunc(pick);
     
     glutMainLoop();
 }

@@ -8,6 +8,8 @@
 
 #include "asteroid.h"
 
+using namespace std;
+
 asteroid::asteroid() : interactiveObject() {
     init();
 }
@@ -22,7 +24,6 @@ void asteroid::init() {
     
     // Set drawing variables
     angle = 0;
-    sides = rand() % 4 + 6;
     
     // Other stuff
     factor = -3;
@@ -61,8 +62,13 @@ light asteroid::createLight() {
 }
 
 void asteroid::action(int factor) {
+    if (factor == 0) {
+        playExplosionSong();
+    } else {
+        everExploded = true;
+    }
+    
     dead = true;
-    playExplosionSong();
 }
 
 void asteroid::shininess(bool on) {
@@ -87,8 +93,29 @@ void asteroid::shininess(bool on) {
     glMaterialfv(GL_FRONT, GL_EMISSION, light);
 }
 
-void asteroid::draw(GLenum mode, int ident) {
+void asteroid::draw(GLenum mode, int ident, vector<float> shadowPlane) {
     if (dead) return;
+    
+    // Draw shadow
+    if (shadowPlane.size() != 0) {
+        glPushMatrix();
+            shadowMatrix(shadowPlane);
+            glRotatef(angle, x, y, z);
+            glTranslatef(x, y, z);
+        
+            glDisable(GL_LIGHTING);
+            glDisable(GL_FOG);
+        
+            glColor4f(0.3f, 0.3f, 0.3f, 0.8f);
+            glutSolidDodecahedron();
+            glColor4f(1, 1, 1, 1);
+        
+            glEnable(GL_LIGHTING);
+            glEnable(GL_FOG);
+        glPopMatrix();
+        
+        return;
+    }
     
     col[0] = (float)rand()/(float)RAND_MAX;
     col[1] = (float)rand()/(float)RAND_MAX;

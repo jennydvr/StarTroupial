@@ -8,14 +8,16 @@
 
 #include "explosionLight.h"
 
+using namespace std;
+
 light::light(float a, float b, float c) : object(a, b, c) {
     GLfloat white[] = {0.5f, 0.5f, 0.5f, 1};
     GLfloat position[] = {a, b, c, 1};
     
-    // Choose light - from LIGHT1 to LIGHT7
-    for (n = 0; n != 6 && USING[n]; ++n);
+    // Choose light - from LIGHT3 to LIGHT7
+    for (n = 0; n != 4 && USING[n]; ++n);
     
-    if (n == 6) // No available lights (should never happen)
+    if (n == 4) // No available lights (should never happen)
         return;
     
     USING[n] = true;
@@ -27,9 +29,7 @@ light::light(float a, float b, float c) : object(a, b, c) {
     glLightfv(LIGHTS[n], GL_POSITION, position);
     
     // Set up attenuation
-    glLightf(LIGHTS[n], GL_CONSTANT_ATTENUATION, 1.0f);
     glLightf(LIGHTS[n], GL_LINEAR_ATTENUATION, 0.1f);
-    glLightf(LIGHTS[n], GL_QUADRATIC_ATTENUATION, 0.05f);
     
     glEnable(LIGHTS[n]);
     initialTime = glutGet(GLUT_ELAPSED_TIME);

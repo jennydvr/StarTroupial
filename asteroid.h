@@ -15,12 +15,11 @@
 #include "particle.h"
 #include "explosionLight.h"
 
+using namespace std;
+
 class asteroid : public interactiveObject {
     
 protected:
-    
-    // Sides of the asteroid
-    int sides;
     
     // Initializes an asteroid
     void init();
@@ -52,7 +51,7 @@ public:
     void update(float dx = 0, float dy = 0, float dz = 0);
     
     // Draws the asteroid
-    void draw(GLenum mode = GL_RENDER, int ident = 0);
+    void draw(GLenum mode = GL_RENDER, int ident = 0, vector<float> shadowPlane = vector<float>());
     
 };
 

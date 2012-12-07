@@ -25,7 +25,7 @@ bool interactiveObject::hits(interactiveObject &obj) {
     
     // Check if there is a collision - if it does, take action
     if ((touched = collision(obj.box, box))) {
-        action(factor);
+        action(obj.factor);
         obj.action(factor);
     }
     

@@ -14,6 +14,14 @@
 #include <iostream>
 #include "interactiveObject.h"
 
+using namespace std;
+
+// Lights
+static unsigned int BLIGHTS[3] = {GL_LIGHT1, GL_LIGHT2, GL_LIGHT3};
+
+// Available lights
+static bool BUSING[3] = {false, false, false};
+
 class bullet : public interactiveObject {
     
 protected:
@@ -28,6 +36,9 @@ protected:
     float yf;
     float zf;
     
+    // Light ID
+    int n;
+    
     // Initializes the bullet
     void init();
     
@@ -39,11 +50,14 @@ public:
     // Activated when hits something
     void action(int factor = 0);
     
+    // Disable lights
+    static void disable(bullet &b);
+    
     // Updates the bullet's position
     void update(float dx = 0, float dy = 0, float dz = 0);
     
     // Draws the ring
-    void draw(GLenum mode = GL_RENDER, int ident = 0);
+    void draw(GLenum mode = GL_RENDER, int ident = 0, vector<float> shadowPlane = vector<float>());
     
 };
 

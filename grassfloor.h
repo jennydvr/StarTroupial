@@ -12,6 +12,8 @@
 #include <iostream>
 #include "object.h"
 
+using namespace std;
+
 class grassfloor : public object {
     
 public:
@@ -19,7 +21,7 @@ public:
     grassfloor();
     
     // Draws grass
-    void draw(GLenum mode = GL_RENDER, int ident = 0);
+    void draw(GLenum mode = GL_RENDER, int ident = 0, vector<float> shadowPlane = vector<float>());
     
 };
 

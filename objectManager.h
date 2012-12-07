@@ -20,12 +20,14 @@
 #include "grassfloor.h"
 #include "skyroof.h"
 #include "explosionLight.h"
+#include "building.h"
 
 using namespace std;
 
 // Game objects
 extern vector<ring> rings;
 extern vector<asteroid> asteroids;
+extern vector<building> buildings;
 extern vector<star> stars;
 extern vector<bullet> bullets;
 extern vector<particle> particles;
@@ -41,11 +43,13 @@ extern int initialGametime;
 extern int pausedTime;
 extern bool paused;
 extern bool infinite;
+extern int prevShooting;
 
 void drawText(float pos[], char *text);
 void updateObjects();
 void addObjects();
 void drawObjects(GLenum mode = GL_RENDER);
+void drawShadows();
 void resetGame();
 bool checkGametime();
 

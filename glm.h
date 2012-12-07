@@ -31,6 +31,7 @@
 #define GLM_TEXTURE  (1 << 2)       /* render with texture coords */
 #define GLM_COLOR    (1 << 3)       /* render with colors */
 #define GLM_MATERIAL (1 << 4)       /* render with materials */
+#define GLM_SHADOW   (1 << 5)       /* render shadow */
 
 
 /* GLMmaterial: Structure that defines a material in a model. 

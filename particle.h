@@ -11,6 +11,8 @@
 
 #include "object.h"
 
+using namespace std;
+
 class particle : public object {
     
 protected:
@@ -36,7 +38,7 @@ public:
     void update(float dx = 0, float dy = 0, float dz = 0);
     
     // Draws star
-    void draw(GLenum mode = GL_RENDER, int ident = 0);
+    void draw(GLenum mode = GL_RENDER, int ident = 0, vector<float> shadowPlane = vector<float>());
     
 };
 

@@ -11,11 +11,13 @@
 
 #include "object.h"
 
+using namespace std;
+
 // Lights
-static unsigned int LIGHTS[6] = {GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7};
+static unsigned int LIGHTS[4] = {GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7};
 
 // Available lights
-static bool USING[6] = {false, false, false, false, false, false};
+static bool USING[4] = {false, false, false, false};
 
 class light : public object {
     

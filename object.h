@@ -14,7 +14,10 @@
 #include <stdlib.h>
 #include "collisionManager.h"
 #include "soundManager.h"
-#include "Texture.h"
+#include "textureManager.h"
+#include "shadowManager.h"
+
+using namespace std;
 
 // Base class for any OpenGL object
 class object {
@@ -28,14 +31,8 @@ protected:
     // Current color of the object
     float col[3];
     
-    // Texture of the object
-    Texture texture;
-    
     // Activates star luminosity
     void luminosity(float r = 0, float g = 0, float b = 0);
-    
-    // Loads a texture
-    void loadTexture(char *name);
     
 public:
     
@@ -63,7 +60,8 @@ public:
     virtual void update(float dx = 0, float dy = 0, float dz = 0);
     
     // Draws the object
-    virtual void draw(GLenum mode = GL_RENDER, int ident = 0);
+    virtual void draw(GLenum mode = GL_RENDER, int ident = 0, vector<float> shadowPlane = vector<float>());
+    
 };
 
 #endif /* defined(__StarTroupial__glObject__) */
